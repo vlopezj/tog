@@ -91,3 +91,4 @@ separator nonempty Name "";
 
 comment "--";
 comment "{-" "-}";
+comment "{-@AGDA-}";

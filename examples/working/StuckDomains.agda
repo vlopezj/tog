@@ -1,7 +1,7 @@
 {-# OPTIONS --type-in-type #-}
 module StuckDomains where
 
--- open import Prelude
+{-@AGDA-} open import Prelude
 
 data Bool : Set
 data Bool where

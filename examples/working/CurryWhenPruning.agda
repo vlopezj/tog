@@ -1,6 +1,6 @@
 module CurryWhenPruning where
 
--- open import Prelude
+{-@AGDA-} open import Prelude
 
 data Bool : Set
 data Bool where
@@ -14,7 +14,7 @@ record Times A B where
     fst : A
     snd : B
 
--- open Times
+{-@AGDA-} open Times
 
 postulate foo : Bool -> Bool
 

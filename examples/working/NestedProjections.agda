@@ -1,6 +1,6 @@
 module NestedProjections where
 
--- open import Prelude
+{-@AGDA-} open import Prelude
 
 record Times (A : Set) (B : Set) : Set
 record Times A B where
@@ -8,7 +8,7 @@ record Times A B where
   field
     fst : A
     snd : B
--- open Times
+{-@AGDA-} open Times
 
 data Bool : Set
 data Bool where

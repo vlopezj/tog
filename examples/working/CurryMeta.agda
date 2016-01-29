@@ -1,6 +1,6 @@
 module CurryMeta where
 
--- open import Prelude
+{-@AGDA-} open import Prelude
 
 record Pair (A : Set) (B : Set) : Set
 record Pair A B where
@@ -9,7 +9,7 @@ record Pair A B where
     fst : A
     snd : B
 
--- open Pair
+{-@AGDA-} open Pair
 
 data Unit : Set
 data Unit where
