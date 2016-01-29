@@ -1,7 +1,8 @@
 {-# OPTIONS --type-in-type --without-K #-}
 module HierReduced where
 
-{-@AGDA-} open import Prelude
+{-@AGDA-}
+open import Prelude
 
 subst : {A : Set} {x y : A} (P : A -> Set) ->
         x == y -> P x -> P y
@@ -20,13 +21,14 @@ record Sg (S : Set)(T : S -> Set) : Set where
   field
     fst : S
     snd : T fst
-{-@AGDA-} open Sg public
+{-@AGDA-}
+open Sg public
 
 data Wi (I : Set)(S : I -> Set)(P : (i : I) -> S i -> Set)
         (r : (i : I)(s : S i) -> P i s -> I)(i : I) : Set where
   wi : (s : S i) (f : (p : P i s) -> Wi I S P r (r i s p)) -> Wi I S P r i
 
-data Zero : Set where {}
+data Zero : Set where {-@EMPTY-}
 kill : {X : Set} -> Zero -> X
 kill ()
 Kill : {X : Set} -> Zero -> X
@@ -65,7 +67,8 @@ record LEVEL : Set where
   field
     uni  : Ki -> Set
     el   : (k : Ki) -> uni k -> Set
-{-@AGDA-} open LEVEL public
+{-@AGDA-}
+open LEVEL public
 
 data UpU (L : LEVEL)(k : Ki) : Set
 UpEl : {L : LEVEL}{k : Ki} -> UpU L k -> Set
@@ -127,7 +130,8 @@ record Embedding (m n : Nat) : Set where
   field
     Em  : (k : Ki) -> raise k m ->  raise k n
     Nop : (k : Ki)(T : raise k m) -> UpEl {Level n} (Em k T) ==  UpEl {Level m} T
-{-@AGDA-} open Embedding public
+{-@AGDA-}
+open Embedding public
 
 idEm : {n : Nat} -> Embedding n n
 idEm = embed (\ k T -> T) (\ k T -> refl)

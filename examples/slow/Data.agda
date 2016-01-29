@@ -1,6 +1,7 @@
 {-# OPTIONS --type-in-type #-}
 module Data where
 
+{-@AGDA-}
 open import Prelude
 
 data Sigma (A : Set)(B : A -> Set) : Set

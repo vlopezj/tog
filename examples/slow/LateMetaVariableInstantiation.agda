@@ -1,5 +1,6 @@
 module LateMetaVariableInstantiation where
 
+{-@AGDA-}
 open import Prelude
 
 data Nat : Set

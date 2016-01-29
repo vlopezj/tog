@@ -283,4 +283,3 @@ prettyTel = group . prs . reverse
     prs (b : bs) = group (prs bs) $$ pr b
 
     pr (x, e) = parens (pretty x <+> text ":" <+> pretty e)
-

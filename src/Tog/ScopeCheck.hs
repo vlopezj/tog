@@ -1,5 +1,6 @@
 {-# LANGUAGE TemplateHaskell #-}
 {-# LANGUAGE OverloadedStrings #-}
+{-# LANGUAGE ViewPatterns #-}
 {-# OPTIONS_GHC -fno-warn-name-shadowing #-}
 -- | All scope checking is done in some module, say M.
 --
@@ -581,7 +582,7 @@ checkDecls ds ret = case ds of
       Just ps -> checkDataOrRecDecl x ps set $ \sig -> do
                    checkDecls ds $ \ds -> do
                      ret (Data sig : ds)
-    C.DataDef cs -> case isParamDef pars of
+    C.DataDef (getConstrs -> cs) -> case isParamDef pars of
       Nothing -> do
         scopeError x "Bad data declaration"
       Just xs -> do
@@ -677,18 +678,22 @@ checkDecls ds ret = case ds of
       let autoImportsDecls = map (\n -> mkRawImportDecl (qNameCons n m)) $ Set.toList autoImports
       checkDecls (autoImportsDecls ++ ds) $ \ds -> do
         ret (Import qn args : ds)
-  C.Open m0 : ds -> do
+  C.Open m0 _ : ds -> do
     let m = mkQName m0
     (m, _, exports, _) <- resolveImportedModule m
     let opened = [(n, qNameCons n m) | (n, _) <- Map.toList exports]
     bindOpenedNames opened $ do
       checkDecls ds $ \ds -> do
         ret (Open m : ds)
-  C.OpenImport imp : ds -> do
+  C.OpenApp imp spec : ds ->
+    checkDecls (C.OpenImport imp spec : ds) ret
+  C.OpenImport imp spec : ds -> do
     let m = case imp of
           C.ImportNoArgs m -> m
           C.ImportArgs m _ -> m
-    checkDecls (C.Import imp : C.Open m : ds) ret
+    checkDecls (C.Import imp : C.Open m spec : ds) ret
+  C.Pragma : [] -> ret []
+  C.Pragma : _ : ds -> checkDecls ds ret
   where
     takeFunDefs :: C.Name -> [C.Decl] -> ([([C.Pattern], C.FunDefBody)], [C.Decl])
     takeFunDefs _ [] =
@@ -740,6 +745,10 @@ checkDataOrRecDecl x ps set ret = do
 
 checkTel :: [C.Binding] -> CCheck Params
 checkTel = concatMapC checkBinding
+
+getConstrs :: C.Constrs -> [C.Constr]
+getConstrs (C.Constrs xs) = xs
+getConstrs (C.NoConstrs) = []
 
 checkBinding :: C.Binding -> CCheck [(Name, Expr)]
 checkBinding b@C.HBind{} _ = scopeError b $ "Implicit binding must be on top level: " ++ C.printTree b

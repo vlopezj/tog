@@ -1,5 +1,8 @@
 module Modules where
 
+{-@AGDA-}
+open import Prelude
+
 module One where
   postulate
     A : Set
@@ -45,7 +48,7 @@ module Nat where
 sum : List Nat.Nat -> Nat.Nat
 sum = concat
   where
-    open import Monoid Nat.Nat Nat.empty Nat.append
+    open Monoid Nat.Nat Nat.empty Nat.append
 
 module First (A : Set) where
   postulate foo : A
@@ -79,20 +82,20 @@ module DefEq (A : Set) (_ : (A -> A) -> A -> A) where
   postulate foo : A
 
 module Dummy1 (A : Set) where
-  open import DefEq A (\f -> f)
+  open DefEq A (\f -> f)
 
   bar : A
   bar = foo
 
 module Dummy2 (A : Set) where
-  open import DefEq A (\f x -> f x)
+  open DefEq A (\f x -> f x)
 
   bar : A
   bar = foo
 
 module Dummy3 (A : Set) where
-  import Dummy1 A
-  import Dummy2 A
+  module D1 = Dummy1 A
+  module D2 = Dummy2 A
 
-  test : Dummy1.bar == Dummy2.bar
+  test : D1.bar == D2.bar
   test = refl

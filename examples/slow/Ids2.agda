@@ -1,7 +1,8 @@
 {-# OPTIONS --type-in-type #-}
 module Ids2 where
 
-{-@AGDA-} open import Prelude
+{-@AGDA-}
+open import Prelude
 
 id : (A : Set) -> A -> A
 id _ x = x

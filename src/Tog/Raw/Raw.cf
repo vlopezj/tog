@@ -18,11 +18,18 @@ TypeSig.    Decl  ::= TypeSig;
 FunDef.     Decl  ::= Name [Pattern] FunDefBody;
 Data.       Decl  ::= "data" Name Params DataBody;
 Record.     Decl  ::= "record" Name Params RecordBody;
-Open.       Decl  ::= "open" QName;
-OpenImport. Decl  ::= "open" "import" Import;
+Open.       Decl  ::= "open" QName [OpenSpec];
+OpenImport. Decl  ::= "open" "import" Import [OpenSpec];
+OpenApp.    Decl  ::= "open" Import [OpenSpec];
 Import.     Decl  ::= "import" Import;
+ModuleApp.  Decl  ::= "module" Name "=" Import;
 Postulate.  Decl  ::= "postulate" "{" [TypeSig] "}";
 Module_.    Decl  ::= Module;
+Pragma.     Decl  ::= "{-@AGDA-}";
+
+separator OpenSpec ""; 
+
+Public. OpenSpec ::= "public" ;
 
 separator TypeSig ";";
 
@@ -43,8 +50,11 @@ Hidden.    HiddenName ::= "{" Name "}";
 separator nonempty HiddenName "";
 
 DataDecl.    DataBody ::= ":" Name;
-DataDef.     DataBody ::= "where" "{" [Constr] "}";
-DataDeclDef. DataBody ::= ":" Name "where" "{" [Constr] "}";
+DataDef.     DataBody ::= "where" Constrs;
+DataDeclDef. DataBody ::= ":" Name "where" Constrs;
+
+Constrs.     Constrs  ::= "{" [Constr] "}"; 
+NoConstrs.   Constrs  ::= "{" "{-@EMPTY-}" "}"; 
 
 RecordDecl.    RecordBody ::= ":" Name;
 RecordDef.     RecordBody ::= "where" "{" "constructor" Name Fields "}";
@@ -90,5 +100,5 @@ position token Empty {"()"};
 separator nonempty Name "";
 
 comment "--";
-comment "{-" "-}";
-comment "{-@AGDA-}";
+comment "{-#";
+-- comment "{-" "-}";

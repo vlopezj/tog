@@ -114,10 +114,13 @@ instance HasSrcLoc C.Decl where
     C.Data x _ _       -> srcLoc x
     C.Record x _ _     -> srcLoc x
     C.FunDef x _ _     -> srcLoc x
-    C.Open x           -> srcLoc x
+    C.Open x _         -> srcLoc x
+    C.OpenApp x _      -> srcLoc x
     C.Import x         -> srcLoc x
     C.Module_ x        -> srcLoc x
-    C.OpenImport x     -> srcLoc x
+    C.OpenImport x _   -> srcLoc x
+    C.ModuleApp x _    -> srcLoc x
+    C.Pragma           -> noSrcLoc
 
 instance HasSrcLoc C.Import where
   srcLoc x = case x of

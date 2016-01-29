@@ -1,0 +1,6 @@
+[submodule "bnfc"]
+	path = bnfc
+	url = git@github.com:vlopezj/bnfc.git
+[submodule "repos/bnfc"]
+	path = repos/bnfc
+	url = git@github.com:vlopezj/bnfc.git

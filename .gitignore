@@ -1,4 +1,4 @@
-bnfc/
+./bnfc/
 dist/
 *.agdai
 modules.pdf

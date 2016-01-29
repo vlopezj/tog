@@ -1,6 +1,7 @@
 module Invariants where
 
-{-@AGDA-} open import Prelude
+{-@AGDA-}
+open import Prelude
 
 data Bool : Set
 data Bool where

@@ -1,7 +1,8 @@
 {-# OPTIONS --type-in-type #-}
 module Record where
 
-{-@AGDA-} open import Prelude
+{-@AGDA-}
+open import Prelude
 
 record Sigma (A : Set)(B : A -> Set) : Set
 record Sigma A B where
@@ -10,7 +11,8 @@ record Sigma A B where
     fst : A
     snd : B fst
 
-{-@AGDA-} open Sigma
+{-@AGDA-}
+open Sigma
 
 data Unit : Set
 data Unit where

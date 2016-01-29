@@ -1,4 +1,8 @@
+{-# OPTIONS --type-in-type #-}
 module Vec where
+
+{-@AGDA-}
+open import Prelude
 
 -- -- Families
 

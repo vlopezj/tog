@@ -6,6 +6,7 @@ let
             dontTest = pkgs.haskell.lib.dontCheck;
         in {
            cabal-install = super.cabal-install; # .override{ enableLibraryProfiling = true; };
+           BNFC = dontTest (callPackage (import ./nix/BNFC.nix) {});
            thisPackage = callPackage (import ./default.nix) {};
         };});
 in pkgs.stdenv.mkDerivation {

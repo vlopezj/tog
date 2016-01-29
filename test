@@ -1,25 +1,40 @@
 #!/bin/bash
 
+
 tc="./dist/build/tog/tog"
+
+function bm_agda {
+    hs_log=$(mktemp)
+    agda_log=$(mktemp)
+    find ./examples -name '*.agdai' -print0 | xargs --null rm -f
+
+    timeout 60s agda -v0 -v profile:100 --allow-unsolved-metas --no-default-libraries -i ./agda-prelude/ $@ +RTS -s$a >$agda_log 2>&1 
+    code=$?
+
+    tid=$(cat $hs_log $agda_log | awk '/^\<Total   / { print $2 }')
+    rm $hs_log $agda_log
+
+    echo -e -n "$tid\t$code"
+}
+
+function bm_tog {
+    tid=$(/usr/bin/time -f "%U" timeout 60s $tc -q --fastGetAbsName $@ 2>&1 >/dev/null)
+    code=$?
+
+    echo -e -n "$tid\t$code"
+}
+
+agda="agda"
 
 make $tc
 
-echo "== Files that should load"
-
-for f in examples/working/*.agda; do
-    echo $f
-    /usr/bin/time -f "%U" $tc -q --fastGetAbsName $@ $f
-    if [ "$?" -ne 0 ]; then
-        exit 1
-    fi
-done
-
-echo "== Files that shouldn't load"
-
-for f in examples/shouldfail/*.agda; do
-    echo $f
-    /usr/bin/time -f "%U" $tc -q --fastGetAbsName $@ $f
-    if [ "$?" -ne 1 ]; then
-        exit 1
-    fi
+for dir in working shouldfail slow; do
+  for f in examples/$dir/*.agda; do
+      echo -e "tog\t$f\t"$(bm_tog $f)
+      echo -e "agda\t$f\t"$(bm_agda -i "./examples/$dir" $f)
+# exit 1
+# if [ "$?" -ne 0 ]; then
+#   exit 1
+# fi
+  done
 done

@@ -1,7 +1,8 @@
 {-# OPTIONS --type-in-type #-}
 module Nested where
 
-{-@AGDA-} open import Prelude
+{-@AGDA-}
+open import Prelude
 
 record Sigma1 (A : Set)(B : A -> Set) : Set
 record Sigma1 A B where
@@ -10,7 +11,8 @@ record Sigma1 A B where
     fst : A
     snd : B fst
 
-{-@AGDA-} open Sigma1
+{-@AGDA-}
+open Sigma1
 
 record Sigma (A : Set)(B : A -> Set) : Set
 record Sigma A B where
@@ -18,7 +20,8 @@ record Sigma A B where
   field
     out : Sigma1 A B
 
-{-@AGDA-} open Sigma
+{-@AGDA-}
+open Sigma
 
 data Unit : Set
 data Unit where
