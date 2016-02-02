@@ -114,7 +114,6 @@ instance HasSrcLoc C.Decl where
     C.Data x _ _       -> srcLoc x
     C.Record x _ _     -> srcLoc x
     C.FunDef x _ _     -> srcLoc x
-    C.Open x _         -> srcLoc x
     C.OpenApp x _      -> srcLoc x
     C.Import x         -> srcLoc x
     C.Module_ x        -> srcLoc x

@@ -678,7 +678,7 @@ checkDecls ds ret = case ds of
       let autoImportsDecls = map (\n -> mkRawImportDecl (qNameCons n m)) $ Set.toList autoImports
       checkDecls (autoImportsDecls ++ ds) $ \ds -> do
         ret (Import qn args : ds)
-  C.Open m0 _ : ds -> do
+  C.OpenApp (C.ImportNoArgs m0) _ : ds -> do
     let m = mkQName m0
     (m, _, exports, _) <- resolveImportedModule m
     let opened = [(n, qNameCons n m) | (n, _) <- Map.toList exports]
@@ -691,7 +691,7 @@ checkDecls ds ret = case ds of
     let m = case imp of
           C.ImportNoArgs m -> m
           C.ImportArgs m _ -> m
-    checkDecls (C.Import imp : C.Open m spec : ds) ret
+    checkDecls (C.Import imp : C.OpenApp (C.ImportNoArgs m) spec : ds) ret
   C.Pragma : [] -> ret []
   C.Pragma : _ : ds -> checkDecls ds ret
   where

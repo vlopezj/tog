@@ -18,7 +18,6 @@ TypeSig.    Decl  ::= TypeSig;
 FunDef.     Decl  ::= Name [Pattern] FunDefBody;
 Data.       Decl  ::= "data" Name Params DataBody;
 Record.     Decl  ::= "record" Name Params RecordBody;
-Open.       Decl  ::= "open" QName [OpenSpec];
 OpenImport. Decl  ::= "open" "import" Import [OpenSpec];
 OpenApp.    Decl  ::= "open" Import [OpenSpec];
 Import.     Decl  ::= "import" Import;

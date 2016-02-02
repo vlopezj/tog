@@ -11,16 +11,16 @@ module One where
 test1 : One.A
 test1 = One.foo
 
--- test2 : One.A
--- test2 = foo
---   where
---     open One
+test2 : One.A
+test2 = foo
+   where
+     open One
 
--- module Dummy where
---   open One
--- 
---   test3 : A
---   test3 = foo
+module Dummy where
+   open One
+ 
+   test3 : A
+   test3 = foo
 
 data List (A : Set) : Set
 data List A where
