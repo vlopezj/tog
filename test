@@ -18,7 +18,7 @@ function bm_agda {
 }
 
 function bm_tog {
-    tid=$(/usr/bin/time -f "%U" timeout 60s $tc -q --fastGetAbsName $@ 2>&1 >/dev/null)
+    tid=$((export TIMEFORMAT=%R; time timeout 60s $tc -q --fastGetAbsName $@ 2>&1 >/dev/null) 2>&1)
     code=$?
 
     echo -e -n "$tid\t$code"
