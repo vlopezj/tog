@@ -1,0 +1,18 @@
+#!/bin/zsh
+
+. ./test-lib
+
+cd ..
+
+make $tc 1>&2
+
+for dir in working shouldfail slow; do
+  for f in examples/$dir/*.agda; do
+      for term_type in S GR GRS GRU H; do
+          bm bm_tog $f --termType $term_type
+      done
+      for sharing_type in --sharing --no-sharing; do
+          bm bm_agda $f $sharing_type
+      done   
+  done
+done

@@ -3,6 +3,7 @@ module Tog.Instrumentation.Timing (timingInit, timingBracket, timingReport) wher
 
 import           Data.IORef                       (IORef, newIORef, writeIORef, readIORef, modifyIORef)
 import qualified Data.HashTable.IO                as HT
+import           Data.List                        (intercalate)
 import           System.IO.Unsafe                 (unsafePerformIO)
 import qualified Text.PrettyPrint.Boxes           as Boxes
 import           Text.Printf                      (printf)
@@ -76,18 +77,36 @@ timingBracket label m = do
   liftIO $ timingPop
   return x
 
+showMSec :: Double -> String
+showMSec = (++ "ms") . showThousandSep . printf "%.0f"
+  where
+    -- From Agda
+
+    showThousandSep :: String -> String
+    showThousandSep = reverse . intercalate "," . chop 3 . reverse
+
+    -- | Chop up a list in chunks of a given length.
+    chop :: Int -> [a] -> [[a]]
+    chop _ [] = []
+    chop n xs = ys : chop n zs
+        where (ys,zs) = splitAt n xs
+
+
+
 timingReport :: IO ()
 timingReport = do
-  kvs <- reverse . sortBy (comparing snd) <$> HT.toList cumulativeTimes
-  let total  = sum $ map snd kvs
-  let fmt n  = printf "%.4f" n :: String
+  let msec_per_sec = 1000
+  times <- HT.toList cumulativeTimes
+  let total  = sum $ map snd times
+  let kvs    = reverse . sortBy (comparing snd) $ times
+  let fmt n  = showMSec (n * msec_per_sec)
   let perc n = printf "%.4f%%" $ ((n * 100) / total) :: String
   let vcatl  = Boxes.vcat Boxes.left
   let vcatr  = Boxes.vcat Boxes.right
   let (<+>)  = (Boxes.<+>)
   let box    = (\(x, y, z) -> vcatl x <+> vcatr y <+> vcatr z) $ unzip3
                [ (Boxes.text label, Boxes.text (fmt t), Boxes.text (perc t))
-               | (label, t) <- kvs
+               | (label, t) <- ("Total",total):kvs
                ]
   putStrLn "------------------------------------------------------------------------"
   putStrLn $ "-- Timing report"

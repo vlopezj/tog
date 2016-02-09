@@ -1,0 +1,37 @@
+#!/bin/zsh
+
+tc="./dist/build/tog/tog"
+
+function bm_agda {
+    hs_log=$(mktemp)
+    agda_log=$(mktemp)
+    timeout 60s agda -v0 -v profile:100 --allow-unsolved-metas --no-default-libraries -i ./agda-prelude/ -i "$(dirname $1)" --ignore-interfaces ${@:2} $1 +RTS -s$hs_log >!$agda_log 2>&1 
+    code=$?
+
+    tid=$(cat $hs_log $agda_log | awk '/^\<Total   / { print $2 }')
+    rm -f $hs_log $agda_log
+
+    echo -e -n "time:$tid\t"
+    echo -e -n "error:$code\t"
+    echo
+}
+
+function bm_tog {
+    tog_log=$(mktemp)
+
+    timeout 60s $tc -q --fastGetAbsName --timeSections ${@:2} $1 >!$tog_log 2>&1
+    code=$?
+
+    tid=$(cat $tog_log | awk '/^\<Total   / { print $2 }')
+    rm -f $tog_log
+
+    echo -e -n "time:$tid\t"
+    echo -e -n "error:$code\t"
+    echo
+}
+
+function bm {
+    eval $@ | while read line; do
+       echo -e "$@\t$line"
+    done
+}
