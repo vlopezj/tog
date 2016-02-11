@@ -1,0 +1,182 @@
+bm_tog examples/working/Basic.agda --termType S	time:244ms	error:0
+bm_tog examples/working/Basic.agda --termType GR	time:204ms	error:0
+bm_tog examples/working/Basic.agda --termType GRS	time:	error:1
+bm_tog examples/working/Basic.agda --termType GRU	time:215ms	error:0
+bm_tog examples/working/Basic.agda --termType H	time:292ms	error:0
+bm_agda examples/working/Basic.agda --sharing	time:129ms	error:0
+bm_agda examples/working/Basic.agda --no-sharing	time:144ms	error:0
+bm_tog examples/working/CurryMeta.agda --termType S	time:11ms	error:0
+bm_tog examples/working/CurryMeta.agda --termType GR	time:14ms	error:0
+bm_tog examples/working/CurryMeta.agda --termType GRS	time:	error:1
+bm_tog examples/working/CurryMeta.agda --termType GRU	time:14ms	error:0
+bm_tog examples/working/CurryMeta.agda --termType H	time:16ms	error:0
+bm_agda examples/working/CurryMeta.agda --sharing	time:52ms	error:0
+bm_agda examples/working/CurryMeta.agda --no-sharing	time:62ms	error:0
+bm_tog examples/working/CurryWhenPruning.agda --termType S	time:23ms	error:0
+bm_tog examples/working/CurryWhenPruning.agda --termType GR	time:24ms	error:0
+bm_tog examples/working/CurryWhenPruning.agda --termType GRS	time:	error:1
+bm_tog examples/working/CurryWhenPruning.agda --termType GRU	time:26ms	error:0
+bm_tog examples/working/CurryWhenPruning.agda --termType H	time:28ms	error:0
+bm_agda examples/working/CurryWhenPruning.agda --sharing	time:61ms	error:0
+bm_agda examples/working/CurryWhenPruning.agda --no-sharing	time:62ms	error:0
+bm_tog examples/working/EmptyPattern.agda --termType S	time:2ms	error:0
+bm_tog examples/working/EmptyPattern.agda --termType GR	time:2ms	error:0
+bm_tog examples/working/EmptyPattern.agda --termType GRS	time:	error:1
+bm_tog examples/working/EmptyPattern.agda --termType GRU	time:2ms	error:0
+bm_tog examples/working/EmptyPattern.agda --termType H	time:2ms	error:0
+bm_agda examples/working/EmptyPattern.agda --sharing	time:24ms	error:0
+bm_agda examples/working/EmptyPattern.agda --no-sharing	time:23ms	error:0
+bm_tog examples/working/EtaExpandVarsAndMeta.agda --termType S	time:22ms	error:0
+bm_tog examples/working/EtaExpandVarsAndMeta.agda --termType GR	time:22ms	error:0
+bm_tog examples/working/EtaExpandVarsAndMeta.agda --termType GRS	time:	error:1
+bm_tog examples/working/EtaExpandVarsAndMeta.agda --termType GRU	time:23ms	error:0
+bm_tog examples/working/EtaExpandVarsAndMeta.agda --termType H	time:37ms	error:0
+bm_agda examples/working/EtaExpandVarsAndMeta.agda --sharing	time:65ms	error:0
+bm_agda examples/working/EtaExpandVarsAndMeta.agda --no-sharing	time:54ms	error:0
+bm_tog examples/working/HierReduced.agda --termType S	time:	error:124
+bm_tog examples/working/HierReduced.agda --termType GR	time:13,023ms	error:0
+bm_tog examples/working/HierReduced.agda --termType GRS	time:	error:1
+bm_tog examples/working/HierReduced.agda --termType GRU	time:15,130ms	error:0
+bm_tog examples/working/HierReduced.agda --termType H	time:	error:124
+bm_agda examples/working/HierReduced.agda --sharing	time:1,178ms	error:0
+bm_agda examples/working/HierReduced.agda --no-sharing	time:1,164ms	error:0
+bm_tog examples/working/Ids.agda --termType S	time:51ms	error:0
+bm_tog examples/working/Ids.agda --termType GR	time:59ms	error:0
+bm_tog examples/working/Ids.agda --termType GRS	time:	error:1
+bm_tog examples/working/Ids.agda --termType GRU	time:58ms	error:0
+bm_tog examples/working/Ids.agda --termType H	time:77ms	error:0
+bm_agda examples/working/Ids.agda --sharing	time:13,616ms	error:0
+bm_agda examples/working/Ids.agda --no-sharing	time:22,108ms	error:0
+bm_tog examples/working/Invariants.agda --termType S	time:11ms	error:0
+bm_tog examples/working/Invariants.agda --termType GR	time:14ms	error:0
+bm_tog examples/working/Invariants.agda --termType GRS	time:	error:1
+bm_tog examples/working/Invariants.agda --termType GRU	time:18ms	error:0
+bm_tog examples/working/Invariants.agda --termType H	time:15ms	error:0
+bm_agda examples/working/Invariants.agda --sharing	time:76ms	error:0
+bm_agda examples/working/Invariants.agda --no-sharing	time:84ms	error:0
+bm_tog examples/working/InvertFunction.agda --termType S	time:14ms	error:0
+bm_tog examples/working/InvertFunction.agda --termType GR	time:13ms	error:0
+bm_tog examples/working/InvertFunction.agda --termType GRS	time:	error:1
+bm_tog examples/working/InvertFunction.agda --termType GRU	time:14ms	error:0
+bm_tog examples/working/InvertFunction.agda --termType H	time:12ms	error:0
+bm_agda examples/working/InvertFunction.agda --sharing	time:55ms	error:0
+bm_agda examples/working/InvertFunction.agda --no-sharing	time:59ms	error:0
+bm_tog examples/working/Language_test1.agda --termType S	time:69ms	error:0
+bm_tog examples/working/Language_test1.agda --termType GR	time:77ms	error:0
+bm_tog examples/working/Language_test1.agda --termType GRS	time:	error:1
+bm_tog examples/working/Language_test1.agda --termType GRU	time:84ms	error:0
+bm_tog examples/working/Language_test1.agda --termType H	time:93ms	error:0
+bm_agda examples/working/Language_test1.agda --sharing	time:96ms	error:0
+bm_agda examples/working/Language_test1.agda --no-sharing	time:98ms	error:0
+bm_tog examples/working/Language_test2.agda --termType S	time:98ms	error:0
+bm_tog examples/working/Language_test2.agda --termType GR	time:116ms	error:0
+bm_tog examples/working/Language_test2.agda --termType GRS	time:	error:1
+bm_tog examples/working/Language_test2.agda --termType GRU	time:124ms	error:0
+bm_tog examples/working/Language_test2.agda --termType H	time:139ms	error:0
+bm_agda examples/working/Language_test2.agda --sharing	time:107ms	error:0
+bm_agda examples/working/Language_test2.agda --no-sharing	time:119ms	error:0
+bm_tog examples/working/Modules.agda --termType S	time:46ms	error:0
+bm_tog examples/working/Modules.agda --termType GR	time:57ms	error:0
+bm_tog examples/working/Modules.agda --termType GRS	time:	error:1
+bm_tog examples/working/Modules.agda --termType GRU	time:54ms	error:0
+bm_tog examples/working/Modules.agda --termType H	time:64ms	error:0
+bm_agda examples/working/Modules.agda --sharing	time:138ms	error:0
+bm_agda examples/working/Modules.agda --no-sharing	time:140ms	error:0
+bm_tog examples/working/Nat.agda --termType S	time:41ms	error:0
+bm_tog examples/working/Nat.agda --termType GR	time:45ms	error:0
+bm_tog examples/working/Nat.agda --termType GRS	time:	error:1
+bm_tog examples/working/Nat.agda --termType GRU	time:49ms	error:0
+bm_tog examples/working/Nat.agda --termType H	time:56ms	error:0
+bm_agda examples/working/Nat.agda --sharing	time:49ms	error:0
+bm_agda examples/working/Nat.agda --no-sharing	time:50ms	error:0
+bm_tog examples/working/Nested.agda --termType S	time:	error:124
+bm_tog examples/working/Nested.agda --termType GR	time:12,138ms	error:0
+bm_tog examples/working/Nested.agda --termType GRS	time:	error:1
+bm_tog examples/working/Nested.agda --termType GRU	time:14,036ms	error:0
+bm_tog examples/working/Nested.agda --termType H	time:	error:124
+bm_agda examples/working/Nested.agda --sharing	time:250ms	error:0
+bm_agda examples/working/Nested.agda --no-sharing	time:237ms	error:0
+bm_tog examples/working/NestedProjections.agda --termType S	time:40ms	error:0
+bm_tog examples/working/NestedProjections.agda --termType GR	time:29ms	error:0
+bm_tog examples/working/NestedProjections.agda --termType GRS	time:	error:1
+bm_tog examples/working/NestedProjections.agda --termType GRU	time:27ms	error:0
+bm_tog examples/working/NestedProjections.agda --termType H	time:33ms	error:0
+bm_agda examples/working/NestedProjections.agda --sharing	time:74ms	error:0
+bm_agda examples/working/NestedProjections.agda --no-sharing	time:82ms	error:0
+bm_tog examples/working/Record.agda --termType S	time:	error:124
+bm_tog examples/working/Record.agda --termType GR	time:4,477ms	error:0
+bm_tog examples/working/Record.agda --termType GRS	time:	error:1
+bm_tog examples/working/Record.agda --termType GRU	time:5,101ms	error:0
+bm_tog examples/working/Record.agda --termType H	time:	error:124
+bm_agda examples/working/Record.agda --sharing	time:194ms	error:0
+bm_agda examples/working/Record.agda --no-sharing	time:187ms	error:0
+bm_tog examples/working/StuckDomains.agda --termType S	time:20ms	error:0
+bm_tog examples/working/StuckDomains.agda --termType GR	time:23ms	error:0
+bm_tog examples/working/StuckDomains.agda --termType GRS	time:	error:1
+bm_tog examples/working/StuckDomains.agda --termType GRU	time:31ms	error:0
+bm_tog examples/working/StuckDomains.agda --termType H	time:28ms	error:0
+bm_agda examples/working/StuckDomains.agda --sharing	time:76ms	error:0
+bm_agda examples/working/StuckDomains.agda --no-sharing	time:83ms	error:0
+bm_tog examples/working/Vec.agda --termType S	time:505ms	error:0
+bm_tog examples/working/Vec.agda --termType GR	time:531ms	error:0
+bm_tog examples/working/Vec.agda --termType GRS	time:	error:1
+bm_tog examples/working/Vec.agda --termType GRU	time:592ms	error:0
+bm_tog examples/working/Vec.agda --termType H	time:729ms	error:0
+bm_agda examples/working/Vec.agda --sharing	time:198ms	error:0
+bm_agda examples/working/Vec.agda --no-sharing	time:188ms	error:0
+bm_tog examples/working/Where.agda --termType S	time:5ms	error:0
+bm_tog examples/working/Where.agda --termType GR	time:7ms	error:0
+bm_tog examples/working/Where.agda --termType GRS	time:	error:1
+bm_tog examples/working/Where.agda --termType GRU	time:6ms	error:0
+bm_tog examples/working/Where.agda --termType H	time:6ms	error:0
+bm_agda examples/working/Where.agda --sharing	time:35ms	error:0
+bm_agda examples/working/Where.agda --no-sharing	time:32ms	error:0
+bm_tog examples/shouldfail/EmptyPattern.agda --termType S	time:2ms	error:1
+bm_tog examples/shouldfail/EmptyPattern.agda --termType GR	time:3ms	error:1
+bm_tog examples/shouldfail/EmptyPattern.agda --termType GRS	time:	error:1
+bm_tog examples/shouldfail/EmptyPattern.agda --termType GRU	time:3ms	error:1
+bm_tog examples/shouldfail/EmptyPattern.agda --termType H	time:3ms	error:1
+bm_agda examples/shouldfail/EmptyPattern.agda --sharing	time:	error:1
+bm_agda examples/shouldfail/EmptyPattern.agda --no-sharing	time:	error:1
+bm_tog examples/shouldfail/Shadowing2.agda --termType S	time:	error:1
+bm_tog examples/shouldfail/Shadowing2.agda --termType GR	time:	error:1
+bm_tog examples/shouldfail/Shadowing2.agda --termType GRS	time:	error:1
+bm_tog examples/shouldfail/Shadowing2.agda --termType GRU	time:	error:1
+bm_tog examples/shouldfail/Shadowing2.agda --termType H	time:	error:1
+bm_agda examples/shouldfail/Shadowing2.agda --sharing	time:	error:1
+bm_agda examples/shouldfail/Shadowing2.agda --no-sharing	time:	error:1
+bm_tog examples/shouldfail/Shadowing.agda --termType S	time:	error:1
+bm_tog examples/shouldfail/Shadowing.agda --termType GR	time:	error:1
+bm_tog examples/shouldfail/Shadowing.agda --termType GRS	time:	error:1
+bm_tog examples/shouldfail/Shadowing.agda --termType GRU	time:	error:1
+bm_tog examples/shouldfail/Shadowing.agda --termType H	time:	error:1
+bm_agda examples/shouldfail/Shadowing.agda --sharing	time:	error:1
+bm_agda examples/shouldfail/Shadowing.agda --no-sharing	time:	error:1
+bm_tog examples/slow/Data.agda --termType S	time:	error:124
+bm_tog examples/slow/Data.agda --termType GR	time:	error:124
+bm_tog examples/slow/Data.agda --termType GRS	time:	error:1
+bm_tog examples/slow/Data.agda --termType GRU	time:	error:124
+bm_tog examples/slow/Data.agda --termType H	time:	error:124
+bm_agda examples/slow/Data.agda --sharing	time:218ms	error:0
+bm_agda examples/slow/Data.agda --no-sharing	time:214ms	error:0
+bm_tog examples/slow/Ids2.agda --termType S	time:41ms	error:0
+bm_tog examples/slow/Ids2.agda --termType GR	time:41ms	error:0
+bm_tog examples/slow/Ids2.agda --termType GRS	time:	error:1
+bm_tog examples/slow/Ids2.agda --termType GRU	time:49ms	error:0
+bm_tog examples/slow/Ids2.agda --termType H	time:43ms	error:0
+bm_agda examples/slow/Ids2.agda --sharing	time:94ms	error:0
+bm_agda examples/slow/Ids2.agda --no-sharing	time:86ms	error:0
+bm_tog examples/slow/LateMetaVariableInstantiation.agda --termType S	time:679ms	error:0
+bm_tog examples/slow/LateMetaVariableInstantiation.agda --termType GR	time:460ms	error:0
+bm_tog examples/slow/LateMetaVariableInstantiation.agda --termType GRS	time:	error:1
+bm_tog examples/slow/LateMetaVariableInstantiation.agda --termType GRU	time:472ms	error:0
+bm_tog examples/slow/LateMetaVariableInstantiation.agda --termType H	time:	error:124
+bm_agda examples/slow/LateMetaVariableInstantiation.agda --sharing	time:595ms	error:0
+bm_agda examples/slow/LateMetaVariableInstantiation.agda --no-sharing	time:746ms	error:0
+bm_tog examples/slow/Prelude.agda --termType S	time:	error:1
+bm_tog examples/slow/Prelude.agda --termType GR	time:	error:1
+bm_tog examples/slow/Prelude.agda --termType GRS	time:	error:1
+bm_tog examples/slow/Prelude.agda --termType GRU	time:	error:1
+bm_tog examples/slow/Prelude.agda --termType H	time:	error:1
+bm_agda examples/slow/Prelude.agda --sharing	time:33ms	error:0
+bm_agda examples/slow/Prelude.agda --no-sharing	time:33ms	error:0
