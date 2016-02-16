@@ -8,12 +8,27 @@ function bm_agda {
     timeout 60s agda -v0 -v profile:100 --allow-unsolved-metas --no-default-libraries -i ./agda-prelude/ -i "$(dirname $1)" --ignore-interfaces ${@:2} $1 +RTS -s$hs_log >!$agda_log 2>&1 
     code=$?
 
-    tid=$(cat $hs_log $agda_log | awk '/^\<Total   / { print $2 }')
-    rm -f $hs_log $agda_log
+    echo "error:$code"
+    cat $hs_log
+    cat $agda_log
 
-    echo -e -n "time:$tid\t"
-    echo -e -n "error:$code\t"
-    echo
+    rm -f $hs_log $agda_log
+}
+
+function pp_bm_agda {
+    a=$(mktemp)
+    cat > $a
+
+    tid=$(cat $a | awk '/^\<Total   / { print $2 }')
+    code=$(cat $a | awk 'match($0,/error:([0-9]+)/,data) { print data[1] }')
+
+    cat $a | awk 'BEGIN { OFS="\t" }; /ms[^[:blank:]]*$/ { print "feature:" $1, "time:" $2; }' | while read line; do
+        echo -e -n "$line\t"
+        echo -e -n "error:$code\t"
+        echo
+    done
+
+    rm -f $a
 }
 
 function bm_tog {
@@ -22,16 +37,32 @@ function bm_tog {
     timeout 60s $tc -q --fastGetAbsName --timeSections ${@:2} $1 >!$tog_log 2>&1
     code=$?
 
-    tid=$(cat $tog_log | awk '/^\<Total   / { print $2 }')
-    rm -f $tog_log
+    echo "error:$code"
+    cat $tog_log
 
-    echo -e -n "time:$tid\t"
-    echo -e -n "error:$code\t"
-    echo
+    rm -f $tog_log
 }
 
-function bm {
-    eval $@ | while read line; do
-       echo -e "$@\t$line"
+function pp_bm_tog {
+    a=$(mktemp)
+    cat > $a
+
+    tid=$(cat $a | awk '/^\<Total   / { print $2 }')
+    code=$(cat $a | awk 'match($0,/error:([0-9]+)/,data) { print data[1] }')
+
+    cat $a | awk 'BEGIN { OFS="\t" }; /ms\>/ { print "feature:" $1, "time:" $2; }' | while read line; do
+        echo -e -n "$line\t"
+        echo -e -n "error:$code\t"
+        echo
+    done
+
+    rm -f $a
+}
+
+function add_prefix {
+    a=$(cat $1)
+
+    while read line; do
+        echo "$a\t$line"
     done
 }

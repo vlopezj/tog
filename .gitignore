@@ -26,3 +26,4 @@ auto-save-list
 tramp
 .\#*
 /papers/type-checking-metas.tex
+.Rproj.user
