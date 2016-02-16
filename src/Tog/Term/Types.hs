@@ -1317,7 +1317,7 @@ getAbsName_ t = fromMaybe "_" <$> getAbsName t
 -- Elimination
 ------------------------------------------------------------------------
 
--- | Tries to apply the eliminators to the term.  Trows an error
+-- | Tries to apply the eliminators to the term.  Throws an error
 -- when the term and the eliminators don't match.
 eliminate :: (MonadTerm t m) => t -> [Elim t] -> m t
 eliminate t elims = do
