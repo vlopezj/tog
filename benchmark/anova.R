@@ -14,7 +14,7 @@ baseline <- function (r) {
 
 f_time <- daply(v, .(file), function(r) {  r[baseline(r),]$time[1] })
 
-v$time_norm <- (v$time / f_time[v$file]) - 1.13
+v$time_norm <- (v$time / f_time[v$file])
 
 v <- within(v, term_repr <- relevel(factor(term_repr), ref = "S"))
 
