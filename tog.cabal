@@ -39,6 +39,7 @@ library
                      , Tog.Term.Impl.Simple
                      , Tog.Term.MetaVars
                      , Tog.Term.Pretty
+                     , Tog.Term.PhysEq
                      , Tog.Term.Subst
                      , Tog.Term.Synonyms
                      , Tog.Term.Types

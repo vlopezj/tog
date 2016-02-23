@@ -21,10 +21,12 @@ match($0, /([^[:blank:]]*[.]agda)/, data) { field_str("file", data[1]) }
 /--whnfApplySubst/ { field_lit("whnf-apply-subst", 1) }
 /--whnfEliminate/ { field_lit("whnf-eliminate", 1) }
 /--disableSynEquality/ { field_lit("syn-equality", 0) }
+/--physicalEquality/ { field_lit("phys-equality", 1) }
 
 /bm_tog/ && !/--whnfApplySubst/ { field_lit("whnf-apply-subst", 0) }
 /bm_tog/ && !/--whnfEliminate/ { field_lit("whnf-eliminate", 0) }
 /bm_tog/ && !/--disableSynEquality/ { field_lit("syn-equality", 1) }
+/bm_tog/ && !/--physicalEquality/ { field_lit("phys-equality", 0) }
 
 
 

@@ -526,7 +526,6 @@ instance SynEq t (Head t) where
   synEq _ _ =
     return False
 
-
 -- IsTerm
 ------------------------------------------------------------------------
 

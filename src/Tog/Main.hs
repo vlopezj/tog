@@ -85,6 +85,11 @@ parseTypeCheckConf = Conf
       ( long "whnfEliminate" <>
         help "Reduce term when eliminating a term"
       )
+  <*> switch
+      ( long "physicalEquality" <>
+        help "Use physical equality"
+      )
+
 
 debugLabelsOption
   :: Mod OptionFields DebugLabels

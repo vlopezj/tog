@@ -50,7 +50,7 @@ function pp_bm_tog {
     tid=$(cat $a | awk '/^\<Total   / { print $2 }')
     code=$(cat $a | awk 'match($0,/error:([0-9]+)/,data) { print data[1] }')
 
-    cat $a | awk 'BEGIN { OFS="\t" }; /ms\>/ { print "feature:" $1, "time:" $2; }' | while read line; do
+    cat $a | awk 'BEGIN { OFS="\t" }; /[^[:blank:]]+[[:blank:]]+[.,0-9]+ms\>/ { print "feature:" $1, "time:" $2; }' | while read line; do
         echo -e -n "$line\t"
         echo -e -n "error:$code\t"
         echo

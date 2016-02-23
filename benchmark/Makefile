@@ -9,10 +9,10 @@ task-%: %.test
 %.log: %.task
 	./bm.sh $< > $@
 
-bm_tog_%.plain: bm_tog_%.log bm_tog_%.task
+bm_tog_%.plain: bm_tog_%.log bm_tog_%.task test-lib
 	./test-lib.sh pp_bm_tog < $< | ./test-lib.sh add_prefix $(word 2,$^) > $@
 
-bm_agda_%.plain: bm_agda_%.log bm_agda_%.task
+bm_agda_%.plain: bm_agda_%.log bm_agda_%.task test-lib
 	./test-lib.sh pp_bm_agda < $< | ./test-lib.sh add_prefix $(word 2,$^) > $@
 
 %.result.plain: exp/%/

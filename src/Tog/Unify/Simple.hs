@@ -17,6 +17,7 @@ import           Tog.Prelude
 import           Tog.PrettyPrint                  (($$), (<+>), (//>), (//), group, indent, hang)
 import qualified Tog.PrettyPrint                  as PP
 import           Tog.Term
+import           Tog.Term.PhysEq
 import qualified Tog.Elaborate                    as Elaborate
 import           Tog.Monad
 import           Tog.TypeCheck
@@ -205,9 +206,10 @@ checkEqual (ctx0, type0, t1_0, t2_0) = do
           "y:" //> yDoc
   debugBracket "unify" msg $ do
     runCheckEqual
-      [ checkSynEq              -- Optimization: check if the two terms are equal
-      , etaExpand'              -- Expand the terms
-      , checkMetas           -- Assign/intersect metavariables if needed
+      [ checkPhysEq         -- Check if the adresses are equal
+      , checkSynEq          -- Optimization: check if the two terms are equal
+      , etaExpand'          -- Expand the terms
+      , checkMetas          -- Assign/intersect metavariables if needed
       ]
       compareTerms
       (ctx0, type0, t1_0, t2_0)
@@ -234,11 +236,29 @@ checkSynEq args@(ctx, type_, t1, t2) = do
         -- Optimization: try with a simple syntactic check first.
         t1' <- ignoreBlocking =<< whnf t1
         t2' <- ignoreBlocking =<< whnf t2
-        -- TODO add option to skip this check
         eq <- synEq t1' t2'
         if eq
           then done []
           else keepGoing (ctx, type_, t1', t2')
+
+checkPhysEq
+  :: (IsTerm t)
+  => CheckEqual t -> TC t r s (CheckEqualProgress t)
+checkPhysEq args@(ctx, type_, t1, t2) = do
+  enabled <- confPhysicalEquality <$> readConf
+  if enabled
+    then do
+      debugBracket_ "checkPhysEq" "" $ do
+        -- Optimization: try with a simple syntactic check first.
+        t1' <- ignoreBlocking =<< whnf t1
+        t2' <- ignoreBlocking =<< whnf t2
+        eq <- physEq t1' t2'
+        if eq
+          then done []
+          else keepGoing (ctx, type_, t1', t2')
+    else do
+      keepGoing args
+
 
 etaExpand'
   :: (IsTerm t)

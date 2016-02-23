@@ -36,6 +36,7 @@ data Conf = Conf
   , confWhnfApplySubst          :: Bool
   , confTimeSections            :: Bool
   , confWhnfEliminate           :: Bool
+  , confPhysicalEquality        :: Bool
   }
 
 data DebugLabels
@@ -59,7 +60,7 @@ instance Monoid DebugLabels where
   DLSome xs `mappend` DLSome ys = DLSome (xs ++ ys)
 
 defaultConf :: Conf
-defaultConf = Conf "S" "Simple" mempty False False False False False False False False False False False False False False
+defaultConf = Conf "S" "Simple" mempty False False False False False False False False False False False False False False False
 
 {-# NOINLINE confRef #-}
 confRef :: IORef (Maybe Conf)

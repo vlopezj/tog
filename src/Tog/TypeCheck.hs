@@ -11,6 +11,7 @@ import           Tog.Prelude
 import           Tog.Instrumentation
 import           Tog.Names
 import           Tog.Term
+import           Tog.Term.PhysEq
 import           Tog.PrettyPrint                  ((<+>), ($$), (//>), render)
 import qualified Tog.PrettyPrint                  as PP
 import           Tog.Monad
@@ -185,7 +186,7 @@ checkEqual x@(_, type_, t1, t2) = do
           "t1:" //> t1Doc $$
           "t2:" //> t2Doc
   debugBracket "defEqual" msg $
-    runCheckEqual [checkSynEq, etaExpand] compareTerms x
+    runCheckEqual [checkPhysEq, checkSynEq, etaExpand] compareTerms x
   where
     runCheckEqual [] finally x' = do
       finally x'
@@ -193,17 +194,36 @@ checkEqual x@(_, type_, t1, t2) = do
       mbX <- action x'
       forM_ mbX $ runCheckEqual actions finally
 
+checkPhysEq :: (IsTerm t) => CheckEqual t -> TC t r s (Maybe (CheckEqual t))
+checkPhysEq args@(ctx, type_, t1, t2) = do
+  enabled <- confPhysicalEquality <$> readConf
+  if enabled then do
+    debug_ "checkPhysEq" ""
+    -- Optimization: try with a simple syntactic check first.
+    t1' <- ignoreBlocking =<< whnf t1
+    t2' <- ignoreBlocking =<< whnf t2
+    -- TODO add option to skip this check
+    eq <- physEq t1' t2'
+    return $ if eq
+      then Nothing
+      else Just (ctx, type_, t1', t2')
+  else do
+    return$ Just args
+
 checkSynEq :: (IsTerm t) => CheckEqual t -> TC t r s (Maybe (CheckEqual t))
-checkSynEq (ctx, type_, t1, t2) = do
-  debug_ "checkSynEq" ""
-  -- Optimization: try with a simple syntactic check first.
-  t1' <- ignoreBlocking =<< whnf t1
-  t2' <- ignoreBlocking =<< whnf t2
-  -- TODO add option to skip this check
-  eq <- synEq t1' t2'
-  return $ if eq
-    then Nothing
-    else Just (ctx, type_, t1', t2')
+checkSynEq args@(ctx, type_, t1, t2) = do
+  disabled <- confDisableSynEquality <$> readConf
+  if disabled then return (Just args)
+  else do
+    debug_ "checkSynEq" ""
+    -- Optimization: try with a simple syntactic check first.
+    t1' <- ignoreBlocking =<< whnf t1
+    t2' <- ignoreBlocking =<< whnf t2
+    -- TODO add option to skip this check
+    eq <- synEq t1' t2'
+    return $ if eq
+      then Nothing
+      else Just (ctx, type_, t1', t2')
 
 etaExpand :: (IsTerm t) => CheckEqual t -> TC t r s (Maybe (CheckEqual t))
 etaExpand (ctx, type_, t1, t2) = do
