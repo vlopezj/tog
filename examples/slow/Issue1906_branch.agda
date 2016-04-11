@@ -12,8 +12,8 @@ module B (a : Bool) where
   b1 = f
 
 xor : Bool -> Bool -> Bool
-xor true true = false
 xor false true = true
+xor true true = false
 xor true false = true
 xor false false = false
 
