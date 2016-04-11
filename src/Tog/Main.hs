@@ -29,7 +29,7 @@ parseTypeCheckConf = Conf
       )
   <*> debugLabelsOption
       ( long "debug" <> short 'd' <> value mempty <>
-        help "Select debug labels to print. -d '' will print all the debug messages."
+        help "Select debug labels to print (separated by |). -d '' will print all the debug messages."
       )
   <*> switch
       ( long "stackTrace" <> short 's' <>
