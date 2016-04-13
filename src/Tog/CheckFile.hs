@@ -467,6 +467,7 @@ checkFile decls ret = do
     "GR"  -> checkFile' (Proxy :: Proxy GraphReduce) decls ret
     "GRU" -> checkFile' (Proxy :: Proxy GraphReduceUnpack) decls ret
     "H"   -> checkFile' (Proxy :: Proxy Hashed) decls ret
+    "HC"   -> checkFile' (Proxy :: Proxy HashConsed) decls ret
     type_ -> ret (sigEmpty :: Signature Simple) (Just ("Invalid term type" <+> PP.text type_))
 
 checkFile'

@@ -1,6 +1,7 @@
 {-# LANGUAGE OverloadedStrings #-}
 {-# LANGUAGE NoImplicitPrelude #-}
 {-# LANGUAGE UndecidableInstances #-}
+{-# LANGUAGE CPP #-}
 module Tog.Term.Types
   ( -- * Var
     Var
@@ -304,6 +305,19 @@ instance PP.Pretty Projection where
 -- | The 'TermView' lets us pattern match on terms.  The actual
 -- implementation of terms might be different, but we must be able to
 -- get a 'TermView' out of it.  See 'View'.
+
+-- TODO: Switch between lazy and strict representations
+#ifdef TogLazyTermView 
+data TermView t
+    = Pi (Type t) (Abs (Type t))
+    | Lam (Abs t)
+    | Equal (Type t) (Term t) (Term t)
+    | Refl
+    | Set
+    | Con (Opened QName t) [Term t]
+    | App (Head t) [Elim t]
+    deriving (Eq, Generic, Show)
+#else
 data TermView t
     = Pi !(Type t) !(Abs (Type t))
     | Lam !(Abs t)
@@ -313,6 +327,7 @@ data TermView t
     | Con !(Opened QName t) [Term t]
     | App !(Head t) [Elim t]
     deriving (Eq, Generic, Show)
+#endif            
 
 instance (Hashable t) => Hashable (TermView t)
 
