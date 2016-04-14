@@ -8,6 +8,16 @@ cabal-version:       >= 1.10
 tested-with:         GHC == 7.6.3
                      GHC == 7.8.3
 
+flag tog-lazy-term-view
+   description: Switch to lazy terms
+   manual: True
+   default: False
+
+flag tog-lazy-hash-consing
+   description: Compute hash-consing id lazily
+   manual: True
+   default: False
+
 library
   exposed-modules:     Tog.Abstract
                      , Tog.CheckFile
@@ -92,6 +102,18 @@ library
       c-sources: cbits/time-posix.c
   }
 
+
+  if flag(tog-lazy-term-view)
+     cpp-options: -DTogLazyTermView
+  else
+     cpp-options: -DTogStrictTermView
+
+  if flag(tog-lazy-hash-consing)
+     cpp-options: -DTogLazyHashConsed
+  else
+     cpp-options: -DTogStrictHashConsed
+
+
   cc-options:          -fPIC
 
   build-tools:         alex, happy
@@ -121,6 +143,9 @@ library
                      , TypeFamilies
                      , TypeOperators
                      , UnicodeSyntax
+
+ 
+                                           
   
 executable tog
   main-is:             tog.hs

@@ -14,10 +14,15 @@ import Data.Interned (Id, Interned(..), Cache, mkCache, intern, Uninternable(..)
 
 type HashConsed = ITerm       
 
-data ITerm = IT { internalId :: {-# UNPACK #-} !Id
-                , internalCell :: !(TermView ITerm)
-
+#if TogLazyHashConsed
+data ITerm = IT { internalId :: {-# UNPACK #-} Id
+                , internalCell :: TermView ITerm
                 } deriving (Typeable, Show)
+#elif TogStrictHashConsed
+data ITerm = IT { internalId :: {-# UNPACK #-} !Id
+                , internalCell :: TermView ITerm
+                } deriving (Typeable, Show)
+#endif            
 
 type UITerm = TermView ITerm 
 

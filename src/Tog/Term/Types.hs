@@ -307,7 +307,7 @@ instance PP.Pretty Projection where
 -- get a 'TermView' out of it.  See 'View'.
 
 -- TODO: Switch between lazy and strict representations
-#ifdef TogLazyTermView 
+#if TogLazyTermView 
 data TermView t
     = Pi (Type t) (Abs (Type t))
     | Lam (Abs t)
@@ -317,7 +317,8 @@ data TermView t
     | Con (Opened QName t) [Term t]
     | App (Head t) [Elim t]
     deriving (Eq, Generic, Show)
-#else
+    bla
+#elif TogStrictTermView
 data TermView t
     = Pi !(Type t) !(Abs (Type t))
     | Lam !(Abs t)
