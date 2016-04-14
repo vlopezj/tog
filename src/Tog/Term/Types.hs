@@ -1,7 +1,6 @@
 {-# LANGUAGE OverloadedStrings #-}
 {-# LANGUAGE NoImplicitPrelude #-}
 {-# LANGUAGE UndecidableInstances #-}
-{-# LANGUAGE CPP #-}
 module Tog.Term.Types
   ( -- * Var
     Var
@@ -88,7 +87,7 @@ module Tog.Term.Types
     -- * Signature
   , MetaBody(..)
   , metaBodyToTerm
-  , Signature(..)
+  , Signature
   , sigEmpty
     -- ** Querying
   , sigGetDefinition
@@ -858,6 +857,17 @@ metaBodyToTerm (MetaBody args mvb) = go args
     go 0 = return mvb
     go n = lam =<< go (n-1)
 
+newtype SignatureVersion = Version Int
+
+versionZero :: SignatureVersion
+versionZero = Version 0
+
+versionIncr :: SignatureVersion -> SignatureVersion
+versionIncr (Version i) = Version (i + 1)
+
+sigVersionIncr :: Signature t -> Signature t
+sigVersionIncr s@Signature{ sigVersion } = s { sigVersion = versionIncr sigVersion }
+
 -- | A 'Signature' stores every globally scoped thing.
 data Signature t = Signature
     { sigDefinitions    :: HMS.HashMap QName (ContextualDef t)
@@ -866,10 +876,11 @@ data Signature t = Signature
       -- ^ Invariant: if a meta is present in 'sigMetasBodies', it's in
       -- 'sigMetasTypes'.
     , sigMetasCount     :: Int
+    , sigVersion        :: SignatureVersion
     }
 
 sigEmpty :: Signature t
-sigEmpty = Signature HMS.empty HMS.empty HMS.empty 0
+sigEmpty = Signature HMS.empty HMS.empty HMS.empty 0 versionZero
 
 sigLookupDefinition :: Signature t -> QName -> Maybe (ContextualDef t)
 sigLookupDefinition sig key = HMS.lookup key (sigDefinitions sig)
