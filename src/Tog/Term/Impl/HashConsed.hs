@@ -13,6 +13,9 @@ import           Tog.Prelude
 
 import           System.Mem.StableName
 
+import           Control.Monad.Reader (ReaderT, ask, runReaderT)
+import           Control.Monad.Writer (WriterT, tell, runWriterT)
+
 import Data.Interned (Id, Interned(..), Cache, mkCache, intern, Uninternable(..))
 
 type HashConsed = ITerm       
@@ -93,10 +96,10 @@ instance Metas ITerm ITerm where
 
 -- TODO: Memoize
 instance Nf ITerm ITerm where
-  nf t =
-    sigLookupCache nfTermCache (internalId t) $ \case
-      Nothing -> (,[]) <$> genericNf t 
-      Just t' -> (\x -> (x,[(internalId t', x)])) <$> genericNf t'
+  nf t = genericNf t {-
+    sigLookupCache nfTermCache (internalId t) $ \a -> \case
+      Nothing -> yieldToCache a (genericNf t)
+      Just t' -> (\x -> (x,[(internalId t', x)])) <$> genericNf t' -}
 
 instance PrettyM ITerm ITerm where
   prettyPrecM = genericPrettyPrecM
@@ -105,24 +108,43 @@ instance PrettyM ITerm ITerm where
 instance ApplySubst ITerm ITerm where
   safeApplySubst t sub = do
     subn <- makeStrictStableName sub
-    sigLookupCache safeApplySubstCache (subn, internalId t) (\_ ->
-      fmap (,[]) (genericSafeApplySubst t sub))
+    sigLookupCache safeApplySubstCache (subn, internalId t) $ \case
+      Nothing  -> lift (lift (genericSafeApplySubst t sub)) >>= yieldToCache 
+      Just t'  -> return t'
 
 instance SynEq ITerm ITerm where
   synEq x y = return (x == y)
 
 -- Perhaps memoize
 instance IsTerm ITerm where
-  whnf t =
+  whnf t = do
+    s <- askSignature
     sigLookupCache whnfTermCache (internalId t) $ \case
-      Nothing -> do
-        t'' <- genericWhnf t
-        return (t'', [])
-      Just t' -> do
-        t'ub <- ignoreBlocking t' 
-        t'' <- genericWhnf t'ub
-        return (t'', [(internalId t'ub, t'')])
-      
+      Nothing -> (lift.lift) (genericWhnf t) >>= yieldToCache
+      Just t' -> case t' of
+        NotBlocked _ -> return t'
+        BlockingHead mv _ -> do
+          let b = sigMetaIsInstantiated s mv
+          if b then do
+            t''  <- lift$ lift$ ignoreBlocking t'
+            t''' <- lift$ lift$ genericWhnf t''
+            tell [(internalId t'', t''')]
+            yieldToCache t'''
+          else
+            return t'
+
+        BlockedOn mvs _ _ -> do
+          case sigMetasAreInstantiated s mvs of
+            -- No metas instantiated
+            True  -> return t'
+            -- Metas where instantiated
+            False -> do
+              t''  <- lift$ lift$ ignoreBlocking t'
+              t''' <- lift$ lift$ genericWhnf t''
+              tell [(internalId t'', t''')]
+              yieldToCache t'''
+          
+     
   view = return . unintern
   unview = return . intern
 
@@ -135,28 +157,30 @@ instance IsTerm ITerm where
   type SignatureMixin ITerm = ITermCache
 
 data ITermCache = ITermCache {
-    whnfTermCache :: Versioned Id (Blocked ITerm),
-    nfTermCache :: Versioned Id ITerm,
+    whnfTermCache :: HT.CuckooHashTable Id (Blocked ITerm),
+    nfTermCache :: HT.CuckooHashTable Id ITerm,
     -- TODO: Check interning substitution
-    safeApplySubstCache :: Versioned (StableName (Subst ITerm), Id) ITerm
+    safeApplySubstCache :: HT.CuckooHashTable (StableName (Subst ITerm), Id) ITerm
     }
 
 -- TODO: Check other hash table implement
-type Versioned a b = HT.CuckooHashTable a (b, Int)
+type Versioned a b = HT.CuckooHashTable a b
 
-sigLookupCache :: (MonadTerm ITerm m, Eq a, Hashable a) => (ITermCache -> Versioned a b) -> a -> (Maybe b -> m (b,[(a,b)])) -> m b
-sigLookupCache f a make = do
+yieldToCache :: (Monad m) => b -> ReaderT a (WriterT [(a,b)] m) b
+yieldToCache b = do
+  a <- ask
+  tell [(a,b)]
+  return b
+
+sigLookupCache :: (MonadTerm ITerm m, Eq a, Hashable a) => (ITermCache -> HT.CuckooHashTable a b)
+               -> a -> (Maybe b -> ReaderT a (WriterT [(a,b)] m) b)
+               -> m b
+sigLookupCache f a freshen = do
   table <- f <$> askSignatureMixin
   cached <- liftIO$ HT.lookup table a
-  s <- askSignature
-  case cached of
-    Just (b, version) | not (sigVersionStale s version) ->
-      return b
-       
-    (fmap fst -> b) -> do
-      (b',rest) <- make b
-      forM_ ((a,b'):rest) $ liftIO . (\(ea,eb) -> HT.insert table ea (eb, sigVersion s))
-      return b'
+  (b', rest) <- runWriterT$ flip runReaderT a$ freshen cached
+  forM_ rest $ liftIO . (\(ea,eb) -> HT.insert table ea eb)
+  return b'
   
 
 {-# NOINLINE defaultITermCache #-}

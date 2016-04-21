@@ -100,6 +100,8 @@ module Tog.Term.Types
   , sigDefinedMetas
   , sigVersion
   , sigVersionStale
+  , sigMetaIsInstantiated
+  , sigMetasAreInstantiated
     -- ** Updating
   , sigAddPostulate
   , sigAddData
@@ -1017,6 +1019,14 @@ sigGetMetaType sig mv = case HMS.lookup mv (sigMetasTypes sig) of
 sigLookupMetaBody
   :: (IsTerm t) => Signature t -> Meta -> Maybe (MetaBody t)
 sigLookupMetaBody sig mv = HMS.lookup mv (sigMetasBodies sig)
+
+sigMetaIsInstantiated
+  :: (IsTerm t) => Signature t -> Meta -> Bool
+sigMetaIsInstantiated sig mv = HMS.member mv (sigMetasBodies sig)
+
+sigMetasAreInstantiated
+  :: (IsTerm t) => Signature t -> MetaSet -> Bool
+sigMetasAreInstantiated sig mvs = all (sigMetaIsInstantiated sig) (HS.toList mvs)
 
 -- | Creates a new 'Meta' with the provided type.
 sigAddMeta :: Signature t -> SrcLoc -> Closed (Type t) -> (Meta, Signature t)
