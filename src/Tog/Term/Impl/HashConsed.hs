@@ -96,10 +96,16 @@ instance Metas ITerm ITerm where
 
 -- TODO: Memoize
 instance Nf ITerm ITerm where
-  nf t = genericNf t {-
-    sigLookupCache nfTermCache (internalId t) $ \a -> \case
-      Nothing -> yieldToCache a (genericNf t)
-      Just t' -> (\x -> (x,[(internalId t', x)])) <$> genericNf t' -}
+  nf t = fst <$> do
+    s <- askSignature
+    let !s_v = sigVersion s
+    sigLookupCache nfTermCache (internalId t) $ \case
+      Nothing -> ((, sigVersion s) <$> lift (lift (genericNf t))) >>= yieldToCache
+      Just (t',v) | sigVersionStale s v -> do
+                      t'' <- lift$ lift$ genericNf t'
+                      tell [(internalId t', (t'', s_v))]
+                      yieldToCache (t'', s_v)
+      Just (t',_) -> return (t', s_v)
 
 instance PrettyM ITerm ITerm where
   prettyPrecM = genericPrettyPrecM
@@ -158,7 +164,7 @@ instance IsTerm ITerm where
 
 data ITermCache = ITermCache {
     whnfTermCache :: HT.CuckooHashTable Id (Blocked ITerm),
-    nfTermCache :: HT.CuckooHashTable Id ITerm,
+    nfTermCache :: HT.CuckooHashTable Id (ITerm, Int),
     -- TODO: Check interning substitution
     safeApplySubstCache :: HT.CuckooHashTable (StableName (Subst ITerm), Id) ITerm
     }
