@@ -1,14 +1,12 @@
 #!/bin/bash
 
-tc="tog"
-
-make $tc
+make install
 
 echo "== Files that should load"
 
 for f in examples/working/*.agda; do
     echo $f
-    /usr/bin/time -f "%U" $tc -q --fastGetAbsName $@ $f
+    /usr/bin/time -f "%U" tog -q --fastGetAbsName $@ $f
     if [ "$?" -ne 0 ]; then
         exit 1
     fi
@@ -18,7 +16,7 @@ echo "== Files that shouldn't load"
 
 for f in examples/shouldfail/*.agda; do
     echo $f
-    /usr/bin/time -f "%U" $tc -q --fastGetAbsName $@ $f
+    /usr/bin/time -f "%U" tog -q --fastGetAbsName $@ $f
     if [ "$?" -ne 1 ]; then
         exit 1
     fi

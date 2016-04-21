@@ -1,5 +1,5 @@
 bnfc_output = $(patsubst %,bnfc/Tog/Raw/%,Abs.hs ErrM.hs Layout.hs Print.hs Lex.x Par.y)
-hs_sources = $(shell find src/ -name '*.hs')
+hs_sources = $(shell find src/ -name '[A-Z]*.hs')
 alex_file = bnfc/Tog/Raw/Lex
 happy_file = bnfc/Tog/Raw/Par
 executable = dist/build/tog/tog

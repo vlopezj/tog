@@ -4,6 +4,7 @@ module Tog.Unify.Common where
 
 import qualified Prelude
 import qualified Data.HashSet                     as HS
+import qualified Data.HashMap.Strict              as HMS
 import qualified Data.Set                         as Set
 import           Data.Tree                        (Tree(Node), subForest, rootLabel, Forest)
 import           Data.Collect
@@ -186,6 +187,8 @@ pruneTerm' vs t = do
     pruneElim (Proj p)   = return $ Proj p
 
     addVar name = Set.insert (boundVar name) (Set.mapMonotonic (weakenVar_ 1) vs)
+
+
 
 type MetaArgs t = [Maybe (Var, Forest (Opened Projection t))]
 

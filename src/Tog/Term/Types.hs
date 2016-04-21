@@ -79,6 +79,7 @@ module Tog.Term.Types
   , definitionType
     -- * MonadTerm
   , MonadTerm(..)
+  , askSignatureMixin
   , TermM
   , runTermM
   , getDefinition
@@ -87,6 +88,7 @@ module Tog.Term.Types
     -- * Signature
   , MetaBody(..)
   , metaBodyToTerm
+    -- | Signature is an ADT, so invariants can be preserved.
   , Signature
   , sigEmpty
     -- ** Querying
@@ -96,6 +98,8 @@ module Tog.Term.Types
   , sigLookupMetaBody
   , sigDefinedNames
   , sigDefinedMetas
+  , sigVersion
+  , sigVersionStale
     -- ** Updating
   , sigAddPostulate
   , sigAddData
@@ -165,6 +169,7 @@ module Tog.Term.Types
 import           Control.Monad.Trans.Reader       (ReaderT, runReaderT, ask)
 import qualified Data.HashSet                     as HS
 import qualified Data.HashMap.Strict              as HMS
+import qualified Data.Default                     as D
 
 import           Tog.Instrumentation
 import           Tog.Prelude
@@ -544,7 +549,8 @@ instance SynEq t (Head t) where
 -- IsTerm
 ------------------------------------------------------------------------
 
-class (Typeable t, Show t, Metas t t, Nf t t, PrettyM t t, ApplySubst t t, SynEq t t) => IsTerm t where
+class (Typeable t, Show t, Metas t t, Nf t t, PrettyM t t, ApplySubst t t, SynEq t t,
+       D.Default (SignatureMixin t)) => IsTerm t where
     -- Evaluation
     --------------------------------------------------------------------
     whnf :: MonadTerm t m => Term t -> m (Blocked (Term t))
@@ -569,6 +575,9 @@ class (Typeable t, Show t, Metas t t, Nf t t, PrettyM t t, ApplySubst t t, SynEq
     set     :: Closed (Term t)
     refl    :: Closed (Term t)
     typeOfJ :: Closed (Type t)
+
+    type SignatureMixin (t :: *) :: *
+    type SignatureMixin t = ()
 
 whnfView :: (MonadTerm t m) => Term t -> m (TermView t)
 whnfView t = (view <=< ignoreBlocking <=< whnf) t
@@ -825,6 +834,20 @@ newtype TermM t a = TermM (ReaderT (Signature t) IO a)
 instance (IsTerm t) => MonadTerm t (TermM t) where
   askSignature = TermM ask
 
+instance (MonadTerm t m) => MonadTerm t (ExceptT a m) where 
+  askSignature = lift askSignature
+
+askSignatureMixin :: (MonadTerm t m) => m (SignatureMixin t)
+askSignatureMixin = sigMixin <$> askSignature
+
+sigVersion :: Signature t -> SignatureVersion
+sigVersion s = sigInstantiatedMetas s 
+
+sigVersionStale :: Signature t -> SignatureVersion -> Bool
+sigVersionStale s v = 
+  let v_current = sigVersion s in
+  (v < v_current)
+
 runTermM :: Signature t -> TermM t a -> IO a
 runTermM sig (TermM m) = runReaderT m sig
 
@@ -857,30 +880,35 @@ metaBodyToTerm (MetaBody args mvb) = go args
     go 0 = return mvb
     go n = lam =<< go (n-1)
 
-newtype SignatureVersion = Version Int
+type SignatureVersion = Int
 
-versionZero :: SignatureVersion
-versionZero = Version 0
+sigInstantiatedMetasIncr :: Signature t -> Signature t
+sigInstantiatedMetasIncr s@Signature{ sigInstantiatedMetas } = s { sigInstantiatedMetas = sigInstantiatedMetas + 1 }
 
-versionIncr :: SignatureVersion -> SignatureVersion
-versionIncr (Version i) = Version (i + 1)
-
-sigVersionIncr :: Signature t -> Signature t
-sigVersionIncr s@Signature{ sigVersion } = s { sigVersion = versionIncr sigVersion }
 
 -- | A 'Signature' stores every globally scoped thing.
 data Signature t = Signature
-    { sigDefinitions    :: HMS.HashMap QName (ContextualDef t)
-    , sigMetasTypes     :: HMS.HashMap Meta (Type t)
-    , sigMetasBodies    :: HMS.HashMap Meta (MetaBody t)
+    { sigDefinitions      :: HMS.HashMap QName (ContextualDef t)
+    , sigMetasTypes       :: HMS.HashMap Meta (Type t)
+    , sigMetasBodies      :: HMS.HashMap Meta (MetaBody t)
       -- ^ Invariant: if a meta is present in 'sigMetasBodies', it's in
       -- 'sigMetasTypes'.
-    , sigMetasCount     :: Int
-    , sigVersion        :: SignatureVersion
+    , sigMetasCount       :: {-# UNPACK #-} !Int
+    , sigInstantiatedMetas :: {-# UNPACK #-} !Int
+      -- ^ Invariant: Number of times sigInstantiateMeta has been called
+      -- on the signature.
+      -- >>> sigInstantiatedMetas == size sigMetasBodies
+    , sigMixin            :: SignatureMixin t
     }
 
-sigEmpty :: Signature t
-sigEmpty = Signature HMS.empty HMS.empty HMS.empty 0 versionZero
+-- | Contract: If a function is defined for a signature `s`, it must be defined
+--   and give the same result as for all signatures `s'`, if s and s' are related
+--   under the reflexive, transitive closure of the relation R,  a R b iff
+--   `(sigVersion b) = versionIncr (sigVersion a)`.
+--   If a function fulfils this contract, then it can be safely memoized.
+
+sigEmpty :: (IsTerm t) => Signature t
+sigEmpty = Signature HMS.empty HMS.empty HMS.empty 0 0 D.def
 
 sigLookupDefinition :: Signature t -> QName -> Maybe (ContextualDef t)
 sigLookupDefinition sig key = HMS.lookup key (sigDefinitions sig)
@@ -891,6 +919,10 @@ sigGetDefinition sig key = case HMS.lookup key (sigDefinitions sig) of
   Nothing   -> __IMPOSSIBLE__
   Just def' -> def'
 
+
+-- Adding new definitions shouldn't change the result of previous “reductions”
+-- (in the sense that calling sigAddDefinition if the definition does not
+-- exist already is __IMPOSSIBLE__).
 sigAddDefinition :: Signature t -> QName -> ContextualDef t -> Signature t
 sigAddDefinition sig key def' = case sigLookupDefinition sig key of
   Nothing -> sigInsertDefinition sig key def'
@@ -997,7 +1029,7 @@ sigAddMeta sig0 loc type_ =
 -- | Instantiates the given 'Meta' with the given body.  Fails if no
 -- type is present for the 'Meta'.
 sigInstantiateMeta :: Signature t -> Meta -> MetaBody t -> Signature t
-sigInstantiateMeta sig mv t = case HMS.lookup mv (sigMetasTypes sig) of
+sigInstantiateMeta sig mv t = sigInstantiatedMetasIncr$ case HMS.lookup mv (sigMetasTypes sig) of
   Just _  -> sig{sigMetasBodies = HMS.insert mv t (sigMetasBodies sig)}
   Nothing -> __IMPOSSIBLE__
 

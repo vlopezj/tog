@@ -1,6 +1,7 @@
 {-# LANGUAGE DeriveAnyClass #-}
 module Tog.Term.Impl.HashConsed where
 
+import           Data.Default
 import qualified Data.HashTable.IO                as HT
 import           System.IO.Unsafe                 (unsafePerformIO)
 
@@ -9,6 +10,8 @@ import           Tog.Term.Types
 import           Tog.Term.Synonyms
 import           Tog.Term.Impl.Common
 import           Tog.Prelude
+
+import           System.Mem.StableName
 
 import Data.Interned (Id, Interned(..), Cache, mkCache, intern, Uninternable(..))
 
@@ -64,6 +67,11 @@ instance Interned ITerm where
 instance Uninternable ITerm where
   unintern = internalCell
 
+
+makeStrictStableName :: (MonadIO m) => a -> m (StableName a)
+makeStrictStableName a = a `seq` liftIO (makeStableName a)
+  
+
 {-# NOINLINE iTermCache #-}
 iTermCache :: Cache ITerm
 iTermCache = mkCache
@@ -85,34 +93,36 @@ instance Metas ITerm ITerm where
 
 -- TODO: Memoize
 instance Nf ITerm ITerm where
-  nf = genericNf
+  nf t =
+    sigLookupCache nfTermCache (internalId t) $ \case
+      Nothing -> (,[]) <$> genericNf t 
+      Just t' -> (\x -> (x,[(internalId t', x)])) <$> genericNf t'
 
--- TODO: Memoize
 instance PrettyM ITerm ITerm where
   prettyPrecM = genericPrettyPrecM
 
--- TODO: Memoize
+-- TODO: Memoize: Remove version check.
 instance ApplySubst ITerm ITerm where
-  safeApplySubst = genericSafeApplySubst
+  safeApplySubst t sub = do
+    subn <- makeStrictStableName sub
+    sigLookupCache safeApplySubstCache (subn, internalId t) (\_ ->
+      fmap (,[]) (genericSafeApplySubst t sub))
 
 instance SynEq ITerm ITerm where
   synEq x y = return (x == y)
 
-
 -- Perhaps memoize
 instance IsTerm ITerm where
-  whnf t = do
-    t' <- fromMaybe t <$> liftIO (lookupWhnfTerm t)
-    blockedT <- genericWhnf t'
-    -- TODO don't do a full traversal for this check
-    t'' <- ignoreBlocking blockedT
-    unless (t == t'') $ liftIO $ do
-      -- TODO do not add both if we didn't get anything the with
-      -- `lookupWhnfTerm'.
-      insertWhnfTerm t t''
-      insertWhnfTerm t' t''
-    return blockedT
-
+  whnf t =
+    sigLookupCache whnfTermCache (internalId t) $ \case
+      Nothing -> do
+        t'' <- genericWhnf t
+        return (t'', [])
+      Just t' -> do
+        t'ub <- ignoreBlocking t' 
+        t'' <- genericWhnf t'ub
+        return (t'', [(internalId t'ub, t'')])
+      
   view = return . unintern
   unview = return . intern
 
@@ -122,17 +132,52 @@ instance IsTerm ITerm where
   {-# NOINLINE typeOfJ #-}
   typeOfJ = unsafePerformIO $ runTermM sigEmpty genericTypeOfJ
 
--- Table
+  type SignatureMixin ITerm = ITermCache
 
-type TableKey = Id
+data ITermCache = ITermCache {
+    whnfTermCache :: Versioned Id (Blocked ITerm),
+    nfTermCache :: Versioned Id ITerm,
+    -- TODO: Check interning substitution
+    safeApplySubstCache :: Versioned (StableName (Subst ITerm), Id) ITerm
+    }
 
-{-# NOINLINE hashedTable #-}
-hashedTable :: HT.CuckooHashTable Id ITerm
-hashedTable = unsafePerformIO HT.new
+-- TODO: Check other hash table implement
+type Versioned a b = HT.CuckooHashTable a (b, Int)
 
-lookupWhnfTerm :: ITerm -> IO (Maybe ITerm)
+sigLookupCache :: (MonadTerm ITerm m, Eq a, Hashable a) => (ITermCache -> Versioned a b) -> a -> (Maybe b -> m (b,[(a,b)])) -> m b
+sigLookupCache f a make = do
+  table <- f <$> askSignatureMixin
+  cached <- liftIO$ HT.lookup table a
+  s <- askSignature
+  case cached of
+    Just (b, version) | not (sigVersionStale s version) ->
+      return b
+       
+    (fmap fst -> b) -> do
+      (b',rest) <- make b
+      forM_ ((a,b'):rest) $ liftIO . (\(ea,eb) -> HT.insert table ea (eb, sigVersion s))
+      return b'
+  
+
+{-# NOINLINE defaultITermCache #-}
+defaultITermCache :: Bool -> ITermCache
+defaultITermCache a = unsafePerformIO$ do
+    whnfTermCache <- HT.new 
+    safeApplySubstCache <- HT.new
+    nfTermCache <- HT.new
+    return$ if a then ITermCache {..} else undefined
+
+instance Default (ITermCache) where
+  def = defaultITermCache True
+
+{-
+lookupWhnfTerm :: MonadTerm ITerm m => ITerm -> m (Maybe ITerm)
 lookupWhnfTerm t0 = do
-  HT.lookup hashedTable (internalId t0)
+  ITermCache{whnfTermCache} <- askSignatureMixin
+  liftIO$ HT.lookup whnfTermCache (internalId t0)
 
-insertWhnfTerm :: ITerm -> ITerm -> IO ()
-insertWhnfTerm t1 t2 = HT.insert hashedTable (internalId t1) t2
+insertWhnfTerm :: MonadTerm ITerm m => ITerm -> ITerm -> m ()
+insertWhnfTerm t1 t2 = do
+  ITermCache{whnfTermCache} <- askSignatureMixin
+  liftIO$ HT.insert whnfTermCache (internalId t1) t2
+-}
