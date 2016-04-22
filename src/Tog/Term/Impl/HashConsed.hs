@@ -100,7 +100,7 @@ instance Nf ITerm ITerm where
     s <- askSignature
     let !s_v = sigVersion s
     sigLookupCache nfTermCache (internalId t) $ \case
-      Nothing -> ((, sigVersion s) <$> lift (lift (genericNf t))) >>= yieldToCache
+      Nothing -> ((, s_v) <$> lift (lift (genericNf t))) >>= yieldToCache
       Just (t',v) | sigVersionStale s v -> do
                       t'' <- lift$ lift$ genericNf t'
                       tell [(internalId t', (t'', s_v))]
