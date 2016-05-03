@@ -540,12 +540,21 @@ invertMeta ctx elims = do
 
 mvaApplyActions
   :: (MonadTerm t m) => Subst t -> MetaArg' t -> m (MetaArg' t)
-mvaApplyActions acts (MVAVar (v, ps)) = do
+mvaApplyActions acts mva@(MVAVar (v, ps)) = do
   vt <- var v
   vt' <- applySubst vt acts
-  App (Var v') elims <- whnfView =<< eliminate vt' (map Proj ps)
-  let Just ps' = mapM isProj elims
-  return $ MVAVar (v', ps')
+  vtt <- whnfView =<< eliminate vt' (map Proj ps)
+  case vtt of
+    App (Var v') elims -> do
+      let Just ps' = mapM isProj elims
+      return $ MVAVar (v', ps')
+    x -> do
+      mvaDoc <- prettyM mva
+      xDoc <- prettyM x
+      fatalError$ PP.render$
+              "Unsuitable form after normalizing:" //> mvaDoc $$
+              "“App (Var v') elims” should match the result, " //> xDoc
+
 mvaApplyActions acts (MVARecord n args) = do
   MVARecord n <$> mapM (mvaApplyActions acts) args
 

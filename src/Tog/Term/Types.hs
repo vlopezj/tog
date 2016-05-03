@@ -406,6 +406,10 @@ instance (PP.Pretty key) => PrettyM t (Opened key t) where
 instance PrettyM t Var where
   prettyM = return . PP.pretty
 
+instance (PrettyM t t) => PrettyM t (TermView (Term t)) where
+  prettyPrecM prec = unview >=> prettyPrecM prec
+  prettyM = unview >=> prettyM
+
 -- Subst
 ------------------------------------------------------------------------
 
@@ -1485,3 +1489,6 @@ checkInvertibility = go []
               fallback
         _ ->
           fallback
+
+
+    

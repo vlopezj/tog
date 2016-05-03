@@ -5,17 +5,12 @@
 
 {-# OPTIONS --type-in-type #-}
 
--- The code contains an example, a partial definition of categories,
--- which triggers the use of an enormous amount of memory (with the
--- development version of Agda which is current at the time of
--- writing). I'm not entirely sure if the code is correct: 2.5G heap
--- doesn't seem to suffice to typecheck this code. /NAD
-
 module Language_test3 where
 
 ------------------------------------------------------------------------
 -- Prelude
 
+{-@AGDA-}
 open import Prelude
 
 subst : {A : Set} {x y : A} (P : A -> Set) ->
@@ -29,6 +24,7 @@ record Unit : Set
 record Unit where
   constructor tt
 
+{-@AGDA-}
 open Unit
 
 data Either (A : Set) (B : Set) : Set
@@ -43,6 +39,7 @@ record Sigma A B where
     fst : A
     snd : B fst
 
+{-@AGDA-}
 open Sigma
 
 uncurry : {A : Set} {B : A -> Set} {C : Sigma A B -> Set} ->
@@ -79,7 +76,7 @@ fun a b = pi a (\ _ -> b)
 times : U -> U -> U
 times a b = sigma a (\ _ -> b)
 
--- Example.
+-- -- Example.
 
 ------------------------------------------------------------------------
 -- Contexts
@@ -126,9 +123,11 @@ suc x = right (pair _ (pair refl x))
 
 lookup : (G : Ctxt) (s : Ty G) -> Var G s -> (g : Env G) -> El (s g)
 lookup empty      _ absurd     _ = absurd _
-lookup (snoc _ _) _ (left  eq) g = subst (\ f -> El (f g)) eq (snd g)
-lookup (snoc _ _) t (right p)  g =
-  subst (\ f -> El (f g)) (fst (snd p)) (lookup _ _ (snd (snd p)) (fst g))
+-- TODO: Fix bug requiring first implicit to subst to be supplied
+-- explicitly.
+lookup (snoc vs v) _ (left  eq) g = subst {_} (\ f -> El (f g)) eq (snd g)
+lookup (snoc vs v) t (right p)  g =
+   subst {Env (snoc vs v) -> U} (\ f -> El (f g)) (fst (snd p)) (lookup _ _ (snd (snd p)) (fst g))
 
 ------------------------------------------------------------------------
 -- A language
