@@ -392,7 +392,7 @@ type ProjectedVar t = (Var, [Opened Projection t])
 data MetaArg t v
   = MVAVar v               -- This vars might be projected before
                            -- expanding the context.
-  | MVARecord
+  | MVARecord              -- 
       (Opened QName t)     -- Datacon name
       [MetaArg t v]        -- Arguments to the datacon
   deriving (Functor, Foldable, Traversable)
@@ -543,20 +543,27 @@ mvaApplyActions
 mvaApplyActions acts mva@(MVAVar (v, ps)) = do
   vt <- var v
   vt' <- applySubst vt acts
-  vtt <- whnfView =<< eliminate vt' (map Proj ps)
-  case vtt of
-    App (Var v') elims -> do
-      let Just ps' = mapM isProj elims
-      return $ MVAVar (v', ps')
-    x -> do
-      mvaDoc <- prettyM mva
-      xDoc <- prettyM x
-      fatalError$ PP.render$
-              "Unsuitable form after normalizing:" //> mvaDoc $$
-              "“App (Var v') elims” should match the result, " //> xDoc
+  vt'' <- eliminate vt' (map Proj ps)
+  makeMetaArg vt''
 
 mvaApplyActions acts (MVARecord n args) = do
   MVARecord n <$> mapM (mvaApplyActions acts) args
+
+makeMetaArg :: (MonadTerm t m) => Term t -> m (MetaArg' t)
+makeMetaArg vt = do
+  vtt <- whnfView vt 
+  case vtt of
+    App (Var v') elims -> do
+      let Just ps' = mapM isProj elims
+      pure$ MVAVar (v', ps')
+    Con c xs -> do
+      MVARecord c <$> mapM makeMetaArg xs
+    x -> fatalError <$> do
+      vttDoc <- prettyM vtt
+      fatalError$ PP.render$
+              "Cannot make" //> vttDoc $$
+              "into a meta argument"
+
 
 varApplyActions
   :: (IsTerm t) => Subst t -> Var -> TC t r s (MetaArg t Var)

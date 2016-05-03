@@ -125,7 +125,7 @@ lookup : (G : Ctxt) (s : Ty G) -> Var G s -> (g : Env G) -> El (s g)
 lookup empty      _ absurd     _ = absurd _
 -- TODO: Fix bug requiring first implicit to subst to be supplied
 -- explicitly.
-lookup (snoc vs v) _ (left  eq) g = subst {_} (\ f -> El (f g)) eq (snd g)
+lookup (snoc vs v) _ (left  eq) g = subst (\ f -> El (f g)) eq (snd g)
 lookup (snoc vs v) t (right p)  g =
    subst {Env (snoc vs v) -> U} (\ f -> El (f g)) (fst (snd p)) (lookup _ _ (snd (snd p)) (fst g))
 
