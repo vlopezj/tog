@@ -5,7 +5,7 @@
 
 {-# OPTIONS --type-in-type #-}
 
-module Language_test3 where
+module Language_test3_mini_prologue where
 
 ------------------------------------------------------------------------
 -- Prelude
@@ -227,16 +227,3 @@ raw-categoryU =
  -- (pi (el obj) (\ x -> el (hom x x)))))
 
 
-raw-category : Type empty (\ _ -> raw-categoryU)
-raw-category =
-     -- Objects.
-   sigma' set'
-     -- Morphisms.
-    (el' (var zero))
-   --(pi' (el' (var zero)) set')
-  -- (pi' (el' (var (suc zero))) set'))
-  -- (sigma' (pi' (el' (var zero)) (pi' (el' (var (suc zero))) set'))
-
-  --    -- Identity.
-  -- (pi' (el' (var (suc zero)))
-  --      (el' (app (app (var (suc zero)) (var zero)) (var zero)))))

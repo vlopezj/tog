@@ -5,7 +5,7 @@
 
 {-# OPTIONS --type-in-type #-}
 
-module Language_test3 where
+module Language_test3_mini where
 
 ------------------------------------------------------------------------
 -- Prelude
