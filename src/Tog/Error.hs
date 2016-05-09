@@ -79,7 +79,7 @@ instance PrettyM t (CheckError t) where
         typeDoc <- prettyM type_
         return $ "Expecting a" <+> tyConDoc <> ", not:" //> typeDoc
       UnsolvedMetas mvs -> do
-        return $ "UnsolvedMetas" <+> PP.pretty (HS.toList mvs)
+        return $ "UnsolvedMetas" <+> PP.pretty (map PP.Verbose$ HS.toList mvs)
       MismatchingArgumentsForModule n tel args -> do
         telDoc <- prettyM tel
         return $

@@ -823,7 +823,10 @@ instance Hashable Meta where
   hashWithSalt s = hashWithSalt s . metaId
 
 instance PP.Pretty Meta where
-    prettyPrec _ (MV mv _) = PP.text $ "_" ++ show mv
+  prettyPrec _ (MV mv _) = PP.text $ "_" ++ show mv
+
+instance PP.Pretty (PP.Verbose Meta) where
+  prettyPrec _ (PP.Verbose (MV mv loc)) = "_" <> PP.text (show mv) <> "@" <> PP.pretty loc
 
 instance HasSrcLoc Meta where
   srcLoc = metaSrcLoc

@@ -19,6 +19,7 @@ module Tog.PrettyPrint
   , hang
   , indent
   , tupled
+  , Verbose(..)
   ) where
 
 import qualified Data.Map.Strict                  as Map.Strict
@@ -160,3 +161,5 @@ hang n d = PP.hang (fromIntegral n) d
 
 indent :: Natural -> Doc -> Doc
 indent n d = PP.indent (fromIntegral n) d
+
+newtype Verbose a = Verbose a
