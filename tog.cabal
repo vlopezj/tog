@@ -19,6 +19,18 @@ flag tog-lazy-hash-consing
    default: False
 
 library
+  if flag(tog-lazy-term-view)
+     cpp-options: -DTogLazyTermView
+  else
+     cpp-options: -DTogStrictTermView
+
+  if flag(tog-lazy-hash-consing)
+     cpp-options: -DTogLazyHashConsed
+  else
+     cpp-options: -DTogStrictHashConsed
+
+
+
   exposed-modules:     Tog.Abstract
                      , Tog.CheckFile
                      , Tog.Elaborate
@@ -102,17 +114,6 @@ library
     else
       c-sources: cbits/time-posix.c
   }
-
-
-  if flag(tog-lazy-term-view)
-     cpp-options: -DTogLazyTermView
-  else
-     cpp-options: -DTogStrictTermView
-
-  if flag(tog-lazy-hash-consing)
-     cpp-options: -DTogLazyHashConsed
-  else
-     cpp-options: -DTogStrictHashConsed
 
 
   cc-options:          -fPIC
