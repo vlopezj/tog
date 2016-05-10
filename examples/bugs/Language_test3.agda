@@ -5,12 +5,17 @@
 
 {-# OPTIONS --type-in-type #-}
 
+-- The code contains an example, a partial definition of categories,
+-- which triggers the use of an enormous amount of memory (with the
+-- development version of Agda which is current at the time of
+-- writing). I'm not entirely sure if the code is correct: 2.5G heap
+-- doesn't seem to suffice to typecheck this code. /NAD
+
 module Language_test3 where
 
 ------------------------------------------------------------------------
 -- Prelude
 
-{-@AGDA-}
 open import Prelude
 
 subst : {A : Set} {x y : A} (P : A -> Set) ->
@@ -24,7 +29,6 @@ record Unit : Set
 record Unit where
   constructor tt
 
-{-@AGDA-}
 open Unit
 
 data Either (A : Set) (B : Set) : Set
@@ -39,7 +43,6 @@ record Sigma A B where
     fst : A
     snd : B fst
 
-{-@AGDA-}
 open Sigma
 
 uncurry : {A : Set} {B : A -> Set} {C : Sigma A B -> Set} ->
@@ -76,7 +79,7 @@ fun a b = pi a (\ _ -> b)
 times : U -> U -> U
 times a b = sigma a (\ _ -> b)
 
--- -- Example.
+-- Example.
 
 ------------------------------------------------------------------------
 -- Contexts
@@ -123,11 +126,9 @@ suc x = right (pair _ (pair refl x))
 
 lookup : (G : Ctxt) (s : Ty G) -> Var G s -> (g : Env G) -> El (s g)
 lookup empty      _ absurd     _ = absurd _
--- TODO: Fix bug requiring first implicit to subst to be supplied
--- explicitly.
-lookup (snoc vs v) _ (left  eq) g = subst (\ f -> El (f g)) eq (snd g)
-lookup (snoc vs v) t (right p)  g =
-   subst {Env (snoc vs v) -> U} (\ f -> El (f g)) (fst (snd p)) (lookup _ _ (snd (snd p)) (fst g))
+lookup (snoc _ _) _ (left  eq) g = subst (\ f -> El (f g)) eq (snd g)
+lookup (snoc _ _) t (right p)  g =
+  subst (\ f -> El (f g)) (fst (snd p)) (lookup _ _ (snd (snd p)) (fst g))
 
 ------------------------------------------------------------------------
 -- A language
@@ -213,30 +214,18 @@ app t1 t2 = app'' t1 t2 refl
 
 -- Example.
 
--- raw-categoryU : U
--- raw-categoryU =
---   sigma set (\ obj ->
---   sigma (fun (el obj) (fun (el obj) set)) (\ hom ->
---   (pi (el obj) (\ x -> el (hom x x)))))
-
 raw-categoryU : U
 raw-categoryU =
-  sigma set (\ obj -> el obj)
---  (fun (el obj) set))-- (fun (el obj) set)))
---  (\ hom ->
- -- (pi (el obj) (\ x -> el (hom x x)))))
-
+  sigma set (\ obj ->
+  sigma (fun (el obj) (fun (el obj) set)) (\ hom ->
+  (pi (el obj) (\ x -> el (hom x x)))))
 
 raw-category : Type empty (\ _ -> raw-categoryU)
 raw-category =
      -- Objects.
    sigma' set'
      -- Morphisms.
-    (el' (var zero))
-   --(pi' (el' (var zero)) set')
-  -- (pi' (el' (var (suc zero))) set'))
-  -- (sigma' (pi' (el' (var zero)) (pi' (el' (var (suc zero))) set'))
-
-  --    -- Identity.
-  -- (pi' (el' (var (suc zero)))
-  --      (el' (app (app (var (suc zero)) (var zero)) (var zero)))))
+  (sigma' (pi' (el' (var zero)) (pi' (el' (var (suc zero))) set'))
+     -- Identity.
+  (pi' (el' (var (suc zero)))
+       (el' (app (app (var (suc zero)) (var zero)) (var zero)))))

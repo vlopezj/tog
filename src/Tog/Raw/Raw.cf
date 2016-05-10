@@ -7,7 +7,7 @@ layout "postulate";
 
 Module. Module ::= "module" Name Params "where" "{" [Decl] "}";
 
-position token Name ((letter | '_') (letter | digit | '-' | '\'' | '_')*) ;
+position token Name (((letter | '_') (letter | digit | '-' | '\'' | '_')*) | {"{!!}"}) ;
 
 Qual.    QName ::= QName "." Name;
 NotQual. QName ::= Name;

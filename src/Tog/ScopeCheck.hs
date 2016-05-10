@@ -920,6 +920,7 @@ appView e = case e of
 checkAppHead :: C.QName -> Check (AppHead, Hiding)
 checkAppHead qn = case qn of
   C.NotQual n -> case n of
+    C.Name ((l, c), "{!!}") -> return (HeadMeta $ SrcLoc l c, 0)
     C.Name ((l, c), "_") -> return (HeadMeta $ SrcLoc l c, 0)
     C.Name ((l, c), "Set") -> return (HeadSet $ SrcLoc l c, 0)
     C.Name ((l, c), "J") -> return (Other (J (SrcLoc l c)), 3)
