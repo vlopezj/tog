@@ -147,7 +147,7 @@ eval : {G : _} {s : _} -> Term G s -> (g : Env G) -> El (s g)
 data Type G s where
   set''   : s == (\ _ -> set) -> Type G s
   el''    : (x : Term G (\ _ -> set)) ->
-            (\ g -> el (eval x g)) == s ->
+            (\ g -> el (eval {G} {\_ -> set} x g)) == s ->
             Type G s
   sigma'' : {t : _} {u : _} ->
             Type G t ->
@@ -180,15 +180,15 @@ eval (app'' t1 t2 eq) g = subst (\ f -> El (f g)) eq
 
 -- Abbreviations.
 
-set' : {G : _} -> Type G (\ _ -> set)
+set' : {G : Ctxt} -> Type G (\ _ -> set)
 set' = set'' refl
 
-el' : {G : _}
+el' : {G : Ctxt}
       (x : Term G (\ _ -> set)) ->
-      Type G (\ g -> el (eval x g))
+      Type G (\ g -> el (eval {G} {\_ -> set} x g))
 el' x = el'' x refl
 
-sigma' : {G : _} {t : _} {u : _} ->
+sigma' : {G : Ctxt} {t : Env G -> U} {u : Env (snoc G t) -> U} ->
          Type G t ->
          Type (snoc G t) u ->
          Type G (\ g -> sigma (t g) (\ v -> u (pair g v)))
@@ -226,13 +226,16 @@ raw-categoryU =
 --  (\ hom ->
  -- (pi (el obj) (\ x -> el (hom x x)))))
 
+cast : (A : Set) -> A -> A
+cast A a = a
 
 raw-category : Type empty (\ _ -> raw-categoryU)
 raw-category =
      -- Objects.
-   sigma' set'
+   sigma' {empty} {\_ -> set} {\x -> el (snd x)} (set' {empty})
      -- Morphisms.
-    (el' (var zero))
+    (el' {snoc empty (\_ -> set)}
+      (var (zero {empty} {\u -> _}))) -- should resolve to set
    --(pi' (el' (var zero)) set')
   -- (pi' (el' (var (suc zero))) set'))
   -- (sigma' (pi' (el' (var zero)) (pi' (el' (var (suc zero))) set'))
