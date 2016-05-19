@@ -16,6 +16,7 @@ module Language_test3 where
 ------------------------------------------------------------------------
 -- Prelude
 
+{-@AGDA-}
 open import Prelude
 
 subst : {A : Set} {x y : A} (P : A -> Set) ->
@@ -29,6 +30,7 @@ record Unit : Set
 record Unit where
   constructor tt
 
+{-@AGDA-}
 open Unit
 
 data Either (A : Set) (B : Set) : Set
@@ -43,6 +45,7 @@ record Sigma A B where
     fst : A
     snd : B fst
 
+{-@AGDA-}
 open Sigma
 
 uncurry : {A : Set} {B : A -> Set} {C : Sigma A B -> Set} ->
@@ -105,7 +108,7 @@ Ty G = Env G -> U
 Env empty      = Unit
 Env (snoc G s) = Sigma (Env G) (\ g -> El (s g))
 
--- Variables (de Bruijn indices).
+-- Variables (de Bruijn indices).
 
 Var : (G : Ctxt) -> Ty G -> Set
 Var empty      t = Empty
@@ -223,9 +226,3038 @@ raw-categoryU =
 raw-category : Type empty (\ _ -> raw-categoryU)
 raw-category =
      -- Objects.
-   sigma' set'
+   sigma' {empty} {\_ -> set} {\ g ->
+                                   sigma
+                                   (pi
+                                    (el
+                                     (eval {snoc empty (\ _ -> set)} {\ _ -> set}
+                                      (var (zero {empty} {\ _ -> set})) g))
+                                    (\ v ->
+                                       pi
+                                       (el
+                                        (eval
+                                         {snoc (snoc empty (\ _ -> set))
+                                          (\ g1 ->
+                                             el
+                                             (eval {snoc empty (\ _ -> set)} {\ _ -> set}
+                                              (var (zero {empty} {\ _ -> set})) g1))}
+                                         {\ _ -> set}
+                                         (var
+                                          (suc {snoc empty (\ _ -> set)}
+                                           {\ z ->
+                                              el
+                                              (eval {snoc empty (\ _ -> set)} {\ _ -> set}
+                                               (var (zero {empty} {\ _ -> set})) z)}
+                                           {\ _ -> set} (zero {empty} {\ _ -> set})))
+                                         (pair g v)))
+                                       (\ v1 -> set)))
+                                   (\ v ->
+                                      pi
+                                      (el
+                                       (eval
+                                        {snoc (snoc empty (\ _ -> set))
+                                         (\ z ->
+                                            pi
+                                            (el
+                                             (eval {snoc empty (\ _ -> set)} {\ _ -> set}
+                                              (var (zero {empty} {\ _ -> set})) z))
+                                            (\ v1 ->
+                                               pi
+                                               (el
+                                                (eval
+                                                 {snoc (snoc empty (\ _ -> set))
+                                                  (\ g1 ->
+                                                     el
+                                                     (eval {snoc empty (\ _ -> set)} {\ _ -> set}
+                                                      (var (zero {empty} {\ _ -> set})) g1))}
+                                                 {\ _ -> set}
+                                                 (var
+                                                  (suc {snoc empty (\ _ -> set)}
+                                                   {\ z1 ->
+                                                      el
+                                                      (eval {snoc empty (\ _ -> set)} {\ _ -> set}
+                                                       (var (zero {empty} {\ _ -> set})) z1)}
+                                                   {\ _ -> set} (zero {empty} {\ _ -> set})))
+                                                 (pair z v1)))
+                                               (\ v1 -> set)))}
+                                        {\ _ -> set}
+                                        (var
+                                         (suc {snoc empty (\ _ -> set)}
+                                          {\ z ->
+                                             pi
+                                             (el
+                                              (eval {snoc empty (\ _ -> set)} {\ _ -> set}
+                                               (var (zero {empty} {\ _ -> set})) z))
+                                             (\ v1 ->
+                                                pi
+                                                (el
+                                                 (eval
+                                                  {snoc (snoc empty (\ _ -> set))
+                                                   (\ g1 ->
+                                                      el
+                                                      (eval {snoc empty (\ _ -> set)} {\ _ -> set}
+                                                       (var (zero {empty} {\ _ -> set})) g1))}
+                                                  {\ _ -> set}
+                                                  (var
+                                                   (suc {snoc empty (\ _ -> set)}
+                                                    {\ z1 ->
+                                                       el
+                                                       (eval {snoc empty (\ _ -> set)} {\ _ -> set}
+                                                        (var (zero {empty} {\ _ -> set})) z1)}
+                                                    {\ _ -> set} (zero {empty} {\ _ -> set})))
+                                                  (pair z v1)))
+                                                (\ v1 -> set))}
+                                          {\ g1 -> set} (zero {empty} {\ _ -> set})))
+                                        (pair g v)))
+                                      (\ v1 ->
+                                         el
+                                         (eval
+                                          {snoc
+                                           (snoc (snoc empty (\ _ -> set))
+                                            (\ z ->
+                                               pi
+                                               (el
+                                                (eval {snoc empty (\ _ -> set)} {\ _ -> set}
+                                                 (var (zero {empty} {\ _ -> set})) z))
+                                               (\ v1 ->
+                                                  pi
+                                                  (el
+                                                   (eval
+                                                    {snoc (snoc empty (\ _ -> set))
+                                                     (\ g1 ->
+                                                        el
+                                                        (eval {snoc empty (\ _ -> set)} {\ _ -> set}
+                                                         (var (zero {empty} {\ _ -> set})) g1))}
+                                                    {\ _ -> set}
+                                                    (var
+                                                     (suc {snoc empty (\ _ -> set)}
+                                                      {\ z1 ->
+                                                         el
+                                                         (eval {snoc empty (\ _ -> set)} {\ _ -> set}
+                                                          (var (zero {empty} {\ _ -> set})) z1)}
+                                                      {\ _ -> set} (zero {empty} {\ _ -> set})))
+                                                    (pair z v1)))
+                                                  (\ v2 -> set))))
+                                           (\ z ->
+                                              el
+                                              (eval
+                                               {snoc (snoc empty (\ _ -> set))
+                                                (\ z1 ->
+                                                   pi
+                                                   (el
+                                                    (eval {snoc empty (\ _ -> set)} {\ _ -> set}
+                                                     (var (zero {empty} {\ _ -> set})) z1))
+                                                   (\ v1 ->
+                                                      pi
+                                                      (el
+                                                       (eval
+                                                        {snoc (snoc empty (\ _ -> set))
+                                                         (\ g1 ->
+                                                            el
+                                                            (eval {snoc empty (\ _ -> set)} {\ _ -> set}
+                                                             (var (zero {empty} {\ _ -> set})) g1))}
+                                                        {\ _ -> set}
+                                                        (var
+                                                         (suc {snoc empty (\ _ -> set)}
+                                                          {\ z2 ->
+                                                             el
+                                                             (eval {snoc empty (\ _ -> set)} {\ _ -> set}
+                                                              (var (zero {empty} {\ _ -> set})) z2)}
+                                                          {\ _ -> set} (zero {empty} {\ _ -> set})))
+                                                        (pair z1 v1)))
+                                                      (\ v2 -> set)))}
+                                               {\ _ -> set}
+                                               (var
+                                                (suc {snoc empty (\ _ -> set)}
+                                                 {\ z1 ->
+                                                    pi
+                                                    (el
+                                                     (eval {snoc empty (\ _ -> set)} {\ _ -> set}
+                                                      (var (zero {empty} {\ _ -> set})) z1))
+                                                    (\ v1 ->
+                                                       pi
+                                                       (el
+                                                        (eval
+                                                         {snoc (snoc empty (\ _ -> set))
+                                                          (\ g1 ->
+                                                             el
+                                                             (eval {snoc empty (\ _ -> set)} {\ _ -> set}
+                                                              (var (zero {empty} {\ _ -> set})) g1))}
+                                                         {\ _ -> set}
+                                                         (var
+                                                          (suc {snoc empty (\ _ -> set)}
+                                                           {\ z2 ->
+                                                              el
+                                                              (eval {snoc empty (\ _ -> set)} {\ _ -> set}
+                                                               (var (zero {empty} {\ _ -> set})) z2)}
+                                                           {\ _ -> set} (zero {empty} {\ _ -> set})))
+                                                         (pair z1 v1)))
+                                                       (\ v2 -> set))}
+                                                 {\ g1 -> set} (zero {empty} {\ _ -> set})))
+                                               z))}
+                                          {\ _ -> set}
+                                          (app
+                                           {snoc
+                                            (snoc (snoc empty (\ _ -> set))
+                                             (\ z ->
+                                                pi
+                                                (el
+                                                 (eval {snoc empty (\ _ -> set)} {\ _ -> set}
+                                                  (var (zero {empty} {\ _ -> set})) z))
+                                                (\ v1 ->
+                                                   pi
+                                                   (el
+                                                    (eval
+                                                     {snoc (snoc empty (\ _ -> set))
+                                                      (\ g1 ->
+                                                         el
+                                                         (eval {snoc empty (\ _ -> set)} {\ _ -> set}
+                                                          (var (zero {empty} {\ _ -> set})) g1))}
+                                                     {\ _ -> set}
+                                                     (var
+                                                      (suc {snoc empty (\ _ -> set)}
+                                                       {\ z1 ->
+                                                          el
+                                                          (eval {snoc empty (\ _ -> set)} {\ _ -> set}
+                                                           (var (zero {empty} {\ _ -> set})) z1)}
+                                                       {\ _ -> set} (zero {empty} {\ _ -> set})))
+                                                     (pair z v1)))
+                                                   (\ v2 -> set))))
+                                            (\ z ->
+                                               el
+                                               (eval
+                                                {snoc (snoc empty (\ _ -> set))
+                                                 (\ z1 ->
+                                                    pi
+                                                    (el
+                                                     (eval {snoc empty (\ _ -> set)} {\ _ -> set}
+                                                      (var (zero {empty} {\ _ -> set})) z1))
+                                                    (\ v1 ->
+                                                       pi
+                                                       (el
+                                                        (eval
+                                                         {snoc (snoc empty (\ _ -> set))
+                                                          (\ g1 ->
+                                                             el
+                                                             (eval {snoc empty (\ _ -> set)} {\ _ -> set}
+                                                              (var (zero {empty} {\ _ -> set})) g1))}
+                                                         {\ _ -> set}
+                                                         (var
+                                                          (suc {snoc empty (\ _ -> set)}
+                                                           {\ z2 ->
+                                                              el
+                                                              (eval {snoc empty (\ _ -> set)} {\ _ -> set}
+                                                               (var (zero {empty} {\ _ -> set})) z2)}
+                                                           {\ _ -> set} (zero {empty} {\ _ -> set})))
+                                                         (pair z1 v1)))
+                                                       (\ v2 -> set)))}
+                                                {\ _ -> set}
+                                                (var
+                                                 (suc {snoc empty (\ _ -> set)}
+                                                  {\ z1 ->
+                                                     pi
+                                                     (el
+                                                      (eval {snoc empty (\ _ -> set)} {\ _ -> set}
+                                                       (var (zero {empty} {\ _ -> set})) z1))
+                                                     (\ v1 ->
+                                                        pi
+                                                        (el
+                                                         (eval
+                                                          {snoc (snoc empty (\ _ -> set))
+                                                           (\ g1 ->
+                                                              el
+                                                              (eval {snoc empty (\ _ -> set)} {\ _ -> set}
+                                                               (var (zero {empty} {\ _ -> set})) g1))}
+                                                          {\ _ -> set}
+                                                          (var
+                                                           (suc {snoc empty (\ _ -> set)}
+                                                            {\ z2 ->
+                                                               el
+                                                               (eval {snoc empty (\ _ -> set)} {\ _ -> set}
+                                                                (var (zero {empty} {\ _ -> set})) z2)}
+                                                            {\ _ -> set} (zero {empty} {\ _ -> set})))
+                                                          (pair z1 v1)))
+                                                        (\ v2 -> set))}
+                                                  {\ g1 -> set} (zero {empty} {\ _ -> set})))
+                                                z))}
+                                           {\ g1 ->
+                                              el
+                                              (eval
+                                               {snoc (snoc empty (\ _ -> set))
+                                                (\ z ->
+                                                   pi
+                                                   (el
+                                                    (eval {snoc empty (\ _ -> set)} {\ _ -> set}
+                                                     (var (zero {empty} {\ _ -> set})) z))
+                                                   (\ v1 ->
+                                                      pi
+                                                      (el
+                                                       (eval
+                                                        {snoc (snoc empty (\ _ -> set))
+                                                         (\ g2 ->
+                                                            el
+                                                            (eval {snoc empty (\ _ -> set)} {\ _ -> set}
+                                                             (var (zero {empty} {\ _ -> set})) g2))}
+                                                        {\ _ -> set}
+                                                        (var
+                                                         (suc {snoc empty (\ _ -> set)}
+                                                          {\ z1 ->
+                                                             el
+                                                             (eval {snoc empty (\ _ -> set)} {\ _ -> set}
+                                                              (var (zero {empty} {\ _ -> set})) z1)}
+                                                          {\ _ -> set} (zero {empty} {\ _ -> set})))
+                                                        (pair z v1)))
+                                                      (\ v2 -> set)))}
+                                               {\ _ -> set}
+                                               (var
+                                                (suc {snoc empty (\ _ -> set)}
+                                                 {\ z ->
+                                                    pi
+                                                    (el
+                                                     (eval {snoc empty (\ _ -> set)} {\ _ -> set}
+                                                      (var (zero {empty} {\ _ -> set})) z))
+                                                    (\ v1 ->
+                                                       pi
+                                                       (el
+                                                        (eval
+                                                         {snoc (snoc empty (\ _ -> set))
+                                                          (\ g2 ->
+                                                             el
+                                                             (eval {snoc empty (\ _ -> set)} {\ _ -> set}
+                                                              (var (zero {empty} {\ _ -> set})) g2))}
+                                                         {\ _ -> set}
+                                                         (var
+                                                          (suc {snoc empty (\ _ -> set)}
+                                                           {\ z1 ->
+                                                              el
+                                                              (eval {snoc empty (\ _ -> set)} {\ _ -> set}
+                                                               (var (zero {empty} {\ _ -> set})) z1)}
+                                                           {\ _ -> set} (zero {empty} {\ _ -> set})))
+                                                         (pair z v1)))
+                                                       (\ v2 -> set))}
+                                                 {\ g2 -> set} (zero {empty} {\ _ -> set})))
+                                               (fst g1))}
+                                           {\ g1 v1 -> set}
+                                           (app
+                                            {snoc
+                                             (snoc (snoc empty (\ _ -> set))
+                                              (\ z ->
+                                                 pi
+                                                 (el
+                                                  (eval {snoc empty (\ _ -> set)} {\ _ -> set}
+                                                   (var (zero {empty} {\ _ -> set})) z))
+                                                 (\ v1 ->
+                                                    pi
+                                                    (el
+                                                     (eval
+                                                      {snoc (snoc empty (\ _ -> set))
+                                                       (\ g1 ->
+                                                          el
+                                                          (eval {snoc empty (\ _ -> set)} {\ _ -> set}
+                                                           (var (zero {empty} {\ _ -> set})) g1))}
+                                                      {\ _ -> set}
+                                                      (var
+                                                       (suc {snoc empty (\ _ -> set)}
+                                                        {\ z1 ->
+                                                           el
+                                                           (eval {snoc empty (\ _ -> set)} {\ _ -> set}
+                                                            (var (zero {empty} {\ _ -> set})) z1)}
+                                                        {\ _ -> set} (zero {empty} {\ _ -> set})))
+                                                      (pair z v1)))
+                                                    (\ v2 -> set))))
+                                             (\ z ->
+                                                el
+                                                (eval
+                                                 {snoc (snoc empty (\ _ -> set))
+                                                  (\ z1 ->
+                                                     pi
+                                                     (el
+                                                      (eval {snoc empty (\ _ -> set)} {\ _ -> set}
+                                                       (var (zero {empty} {\ _ -> set})) z1))
+                                                     (\ v1 ->
+                                                        pi
+                                                        (el
+                                                         (eval
+                                                          {snoc (snoc empty (\ _ -> set))
+                                                           (\ g1 ->
+                                                              el
+                                                              (eval {snoc empty (\ _ -> set)} {\ _ -> set}
+                                                               (var (zero {empty} {\ _ -> set})) g1))}
+                                                          {\ _ -> set}
+                                                          (var
+                                                           (suc {snoc empty (\ _ -> set)}
+                                                            {\ z2 ->
+                                                               el
+                                                               (eval {snoc empty (\ _ -> set)} {\ _ -> set}
+                                                                (var (zero {empty} {\ _ -> set})) z2)}
+                                                            {\ _ -> set} (zero {empty} {\ _ -> set})))
+                                                          (pair z1 v1)))
+                                                        (\ v2 -> set)))}
+                                                 {\ _ -> set}
+                                                 (var
+                                                  (suc {snoc empty (\ _ -> set)}
+                                                   {\ z1 ->
+                                                      pi
+                                                      (el
+                                                       (eval {snoc empty (\ _ -> set)} {\ _ -> set}
+                                                        (var (zero {empty} {\ _ -> set})) z1))
+                                                      (\ v1 ->
+                                                         pi
+                                                         (el
+                                                          (eval
+                                                           {snoc (snoc empty (\ _ -> set))
+                                                            (\ g1 ->
+                                                               el
+                                                               (eval {snoc empty (\ _ -> set)} {\ _ -> set}
+                                                                (var (zero {empty} {\ _ -> set})) g1))}
+                                                           {\ _ -> set}
+                                                           (var
+                                                            (suc {snoc empty (\ _ -> set)}
+                                                             {\ z2 ->
+                                                                el
+                                                                (eval {snoc empty (\ _ -> set)} {\ _ -> set}
+                                                                 (var (zero {empty} {\ _ -> set})) z2)}
+                                                             {\ _ -> set} (zero {empty} {\ _ -> set})))
+                                                           (pair z1 v1)))
+                                                         (\ v2 -> set))}
+                                                   {\ g1 -> set} (zero {empty} {\ _ -> set})))
+                                                 z))}
+                                            {\ g1 ->
+                                               el
+                                               (eval
+                                                {snoc (snoc empty (\ _ -> set))
+                                                 (\ z ->
+                                                    pi
+                                                    (el
+                                                     (eval {snoc empty (\ _ -> set)} {\ _ -> set}
+                                                      (var (zero {empty} {\ _ -> set})) z))
+                                                    (\ v1 ->
+                                                       pi
+                                                       (el
+                                                        (eval
+                                                         {snoc (snoc empty (\ _ -> set))
+                                                          (\ g2 ->
+                                                             el
+                                                             (eval {snoc empty (\ _ -> set)} {\ _ -> set}
+                                                              (var (zero {empty} {\ _ -> set})) g2))}
+                                                         {\ _ -> set}
+                                                         (var
+                                                          (suc {snoc empty (\ _ -> set)}
+                                                           {\ z1 ->
+                                                              el
+                                                              (eval {snoc empty (\ _ -> set)} {\ _ -> set}
+                                                               (var (zero {empty} {\ _ -> set})) z1)}
+                                                           {\ _ -> set} (zero {empty} {\ _ -> set})))
+                                                         (pair z v1)))
+                                                       (\ v2 -> set)))}
+                                                {\ _ -> set}
+                                                (var
+                                                 (suc {snoc empty (\ _ -> set)}
+                                                  {\ z ->
+                                                     pi
+                                                     (el
+                                                      (eval {snoc empty (\ _ -> set)} {\ _ -> set}
+                                                       (var (zero {empty} {\ _ -> set})) z))
+                                                     (\ v1 ->
+                                                        pi
+                                                        (el
+                                                         (eval
+                                                          {snoc (snoc empty (\ _ -> set))
+                                                           (\ g2 ->
+                                                              el
+                                                              (eval {snoc empty (\ _ -> set)} {\ _ -> set}
+                                                               (var (zero {empty} {\ _ -> set})) g2))}
+                                                          {\ _ -> set}
+                                                          (var
+                                                           (suc {snoc empty (\ _ -> set)}
+                                                            {\ z1 ->
+                                                               el
+                                                               (eval {snoc empty (\ _ -> set)} {\ _ -> set}
+                                                                (var (zero {empty} {\ _ -> set})) z1)}
+                                                            {\ _ -> set} (zero {empty} {\ _ -> set})))
+                                                          (pair z v1)))
+                                                        (\ v2 -> set))}
+                                                  {\ g2 -> set} (zero {empty} {\ _ -> set})))
+                                                (fst g1))}
+                                            {\ g1 v1 ->
+                                               pi
+                                               (el
+                                                (eval
+                                                 {snoc (snoc empty (\ _ -> set))
+                                                  (\ g2 ->
+                                                     el
+                                                     (eval {snoc empty (\ _ -> set)} {\ _ -> set}
+                                                      (var (zero {empty} {\ _ -> set})) g2))}
+                                                 {\ _ -> set}
+                                                 (var
+                                                  (suc {snoc empty (\ _ -> set)}
+                                                   {\ z ->
+                                                      el
+                                                      (eval {snoc empty (\ _ -> set)} {\ _ -> set}
+                                                       (var (zero {empty} {\ _ -> set})) z)}
+                                                   {\ _ -> set} (zero {empty} {\ _ -> set})))
+                                                 (pair (fst (fst g1)) v1)))
+                                               (\ v2 -> set)}
+                                            (var
+                                             (suc
+                                              {snoc (snoc empty (\ _ -> set))
+                                               (\ z ->
+                                                  pi
+                                                  (el
+                                                   (eval {snoc empty (\ _ -> set)} {\ _ -> set}
+                                                    (var (zero {empty} {\ _ -> set})) z))
+                                                  (\ v1 ->
+                                                     pi
+                                                     (el
+                                                      (eval
+                                                       {snoc (snoc empty (\ _ -> set))
+                                                        (\ g1 ->
+                                                           el
+                                                           (eval {snoc empty (\ _ -> set)} {\ _ -> set}
+                                                            (var (zero {empty} {\ _ -> set})) g1))}
+                                                       {\ _ -> set}
+                                                       (var
+                                                        (suc {snoc empty (\ _ -> set)}
+                                                         {\ z1 ->
+                                                            el
+                                                            (eval {snoc empty (\ _ -> set)} {\ _ -> set}
+                                                             (var (zero {empty} {\ _ -> set})) z1)}
+                                                         {\ _ -> set} (zero {empty} {\ _ -> set})))
+                                                       (pair z v1)))
+                                                     (\ v2 -> set)))}
+                                              {\ z ->
+                                                 el
+                                                 (eval
+                                                  {snoc (snoc empty (\ _ -> set))
+                                                   (\ z1 ->
+                                                      pi
+                                                      (el
+                                                       (eval {snoc empty (\ _ -> set)} {\ _ -> set}
+                                                        (var (zero {empty} {\ _ -> set})) z1))
+                                                      (\ v1 ->
+                                                         pi
+                                                         (el
+                                                          (eval
+                                                           {snoc (snoc empty (\ _ -> set))
+                                                            (\ g1 ->
+                                                               el
+                                                               (eval {snoc empty (\ _ -> set)} {\ _ -> set}
+                                                                (var (zero {empty} {\ _ -> set})) g1))}
+                                                           {\ _ -> set}
+                                                           (var
+                                                            (suc {snoc empty (\ _ -> set)}
+                                                             {\ z2 ->
+                                                                el
+                                                                (eval {snoc empty (\ _ -> set)} {\ _ -> set}
+                                                                 (var (zero {empty} {\ _ -> set})) z2)}
+                                                             {\ _ -> set} (zero {empty} {\ _ -> set})))
+                                                           (pair z1 v1)))
+                                                         (\ v2 -> set)))}
+                                                  {\ _ -> set}
+                                                  (var
+                                                   (suc {snoc empty (\ _ -> set)}
+                                                    {\ z1 ->
+                                                       pi
+                                                       (el
+                                                        (eval {snoc empty (\ _ -> set)} {\ _ -> set}
+                                                         (var (zero {empty} {\ _ -> set})) z1))
+                                                       (\ v1 ->
+                                                          pi
+                                                          (el
+                                                           (eval
+                                                            {snoc (snoc empty (\ _ -> set))
+                                                             (\ g1 ->
+                                                                el
+                                                                (eval {snoc empty (\ _ -> set)} {\ _ -> set}
+                                                                 (var (zero {empty} {\ _ -> set})) g1))}
+                                                            {\ _ -> set}
+                                                            (var
+                                                             (suc {snoc empty (\ _ -> set)}
+                                                              {\ z2 ->
+                                                                 el
+                                                                 (eval {snoc empty (\ _ -> set)} {\ _ -> set}
+                                                                  (var (zero {empty} {\ _ -> set})) z2)}
+                                                              {\ _ -> set} (zero {empty} {\ _ -> set})))
+                                                            (pair z1 v1)))
+                                                          (\ v2 -> set))}
+                                                    {\ g1 -> set} (zero {empty} {\ _ -> set})))
+                                                  z)}
+                                              {\ g1 ->
+                                                 pi
+                                                 (el
+                                                  (eval {snoc empty (\ _ -> set)} {\ _ -> set}
+                                                   (var (zero {empty} {\ _ -> set})) (fst g1)))
+                                                 (\ v1 ->
+                                                    pi
+                                                    (el
+                                                     (eval
+                                                      {snoc (snoc empty (\ _ -> set))
+                                                       (\ g2 ->
+                                                          el
+                                                          (eval {snoc empty (\ _ -> set)} {\ _ -> set}
+                                                           (var (zero {empty} {\ _ -> set})) g2))}
+                                                      {\ _ -> set}
+                                                      (var
+                                                       (suc {snoc empty (\ _ -> set)}
+                                                        {\ z ->
+                                                           el
+                                                           (eval {snoc empty (\ _ -> set)} {\ _ -> set}
+                                                            (var (zero {empty} {\ _ -> set})) z)}
+                                                        {\ _ -> set} (zero {empty} {\ _ -> set})))
+                                                      (pair (fst g1) v1)))
+                                                    (\ v2 -> set))}
+                                              (zero {snoc empty (\ _ -> set)}
+                                               {\ z ->
+                                                  pi
+                                                  (el
+                                                   (eval {snoc empty (\ _ -> set)} {\ _ -> set}
+                                                    (var (zero {empty} {\ _ -> set})) z))
+                                                  (\ v1 ->
+                                                     pi
+                                                     (el
+                                                      (eval
+                                                       {snoc (snoc empty (\ _ -> set))
+                                                        (\ g1 ->
+                                                           el
+                                                           (eval {snoc empty (\ _ -> set)} {\ _ -> set}
+                                                            (var (zero {empty} {\ _ -> set})) g1))}
+                                                       {\ _ -> set}
+                                                       (var
+                                                        (suc {snoc empty (\ _ -> set)}
+                                                         {\ z1 ->
+                                                            el
+                                                            (eval {snoc empty (\ _ -> set)} {\ _ -> set}
+                                                             (var (zero {empty} {\ _ -> set})) z1)}
+                                                         {\ _ -> set} (zero {empty} {\ _ -> set})))
+                                                       (pair z v1)))
+                                                     (\ v2 -> set))})))
+                                            (var
+                                             (zero
+                                              {snoc (snoc empty (\ v1 -> set))
+                                               (\ z ->
+                                                  pi
+                                                  (el
+                                                   (eval {snoc empty (\ _ -> set)} {\ _ -> set}
+                                                    (var (zero {empty} {\ _ -> set})) z))
+                                                  (\ v1 ->
+                                                     pi
+                                                     (el
+                                                      (eval
+                                                       {snoc (snoc empty (\ _ -> set))
+                                                        (\ g1 ->
+                                                           el
+                                                           (eval {snoc empty (\ _ -> set)} {\ _ -> set}
+                                                            (var (zero {empty} {\ _ -> set})) g1))}
+                                                       {\ _ -> set}
+                                                       (var
+                                                        (suc {snoc empty (\ _ -> set)}
+                                                         {\ z1 ->
+                                                            el
+                                                            (eval {snoc empty (\ _ -> set)} {\ _ -> set}
+                                                             (var (zero {empty} {\ _ -> set})) z1)}
+                                                         {\ _ -> set} (zero {empty} {\ _ -> set})))
+                                                       (pair z v1)))
+                                                     (\ v2 -> set)))}
+                                              {\ z ->
+                                                 el
+                                                 (eval
+                                                  {snoc (snoc empty (\ _ -> set))
+                                                   (\ z1 ->
+                                                      pi
+                                                      (el
+                                                       (eval {snoc empty (\ _ -> set)} {\ _ -> set}
+                                                        (var (zero {empty} {\ _ -> set})) z1))
+                                                      (\ v1 ->
+                                                         pi
+                                                         (el
+                                                          (eval
+                                                           {snoc (snoc empty (\ _ -> set))
+                                                            (\ g1 ->
+                                                               el
+                                                               (eval {snoc empty (\ _ -> set)} {\ _ -> set}
+                                                                (var (zero {empty} {\ _ -> set})) g1))}
+                                                           {\ _ -> set}
+                                                           (var
+                                                            (suc {snoc empty (\ _ -> set)}
+                                                             {\ z2 ->
+                                                                el
+                                                                (eval {snoc empty (\ _ -> set)} {\ _ -> set}
+                                                                 (var (zero {empty} {\ _ -> set})) z2)}
+                                                             {\ _ -> set} (zero {empty} {\ _ -> set})))
+                                                           (pair z1 v1)))
+                                                         (\ v2 -> set)))}
+                                                  {\ _ -> set}
+                                                  (var
+                                                   (suc {snoc empty (\ _ -> set)}
+                                                    {\ z1 ->
+                                                       pi
+                                                       (el
+                                                        (eval {snoc empty (\ _ -> set)} {\ _ -> set}
+                                                         (var (zero {empty} {\ _ -> set})) z1))
+                                                       (\ v1 ->
+                                                          pi
+                                                          (el
+                                                           (eval
+                                                            {snoc (snoc empty (\ _ -> set))
+                                                             (\ g1 ->
+                                                                el
+                                                                (eval {snoc empty (\ _ -> set)} {\ _ -> set}
+                                                                 (var (zero {empty} {\ _ -> set})) g1))}
+                                                            {\ _ -> set}
+                                                            (var
+                                                             (suc {snoc empty (\ _ -> set)}
+                                                              {\ z2 ->
+                                                                 el
+                                                                 (eval {snoc empty (\ _ -> set)} {\ _ -> set}
+                                                                  (var (zero {empty} {\ _ -> set})) z2)}
+                                                              {\ _ -> set} (zero {empty} {\ _ -> set})))
+                                                            (pair z1 v1)))
+                                                          (\ v2 -> set))}
+                                                    {\ g1 -> set} (zero {empty} {\ _ -> set})))
+                                                  z)})))
+                                           (var
+                                            (zero
+                                             {snoc (snoc empty (\ v1 -> set))
+                                              (\ z ->
+                                                 pi
+                                                 (el
+                                                  (eval {snoc empty (\ _ -> set)} {\ _ -> set}
+                                                   (var (zero {empty} {\ _ -> set})) z))
+                                                 (\ v1 ->
+                                                    pi
+                                                    (el
+                                                     (eval
+                                                      {snoc (snoc empty (\ _ -> set))
+                                                       (\ g1 ->
+                                                          el
+                                                          (eval {snoc empty (\ _ -> set)} {\ _ -> set}
+                                                           (var (zero {empty} {\ _ -> set})) g1))}
+                                                      {\ _ -> set}
+                                                      (var
+                                                       (suc {snoc empty (\ _ -> set)}
+                                                        {\ z1 ->
+                                                           el
+                                                           (eval {snoc empty (\ _ -> set)} {\ _ -> set}
+                                                            (var (zero {empty} {\ _ -> set})) z1)}
+                                                        {\ _ -> set} (zero {empty} {\ _ -> set})))
+                                                      (pair z v1)))
+                                                    (\ v2 -> set)))}
+                                             {\ z ->
+                                                el
+                                                (eval
+                                                 {snoc (snoc empty (\ _ -> set))
+                                                  (\ z1 ->
+                                                     pi
+                                                     (el
+                                                      (eval {snoc empty (\ _ -> set)} {\ _ -> set}
+                                                       (var (zero {empty} {\ _ -> set})) z1))
+                                                     (\ v1 ->
+                                                        pi
+                                                        (el
+                                                         (eval
+                                                          {snoc (snoc empty (\ _ -> set))
+                                                           (\ g1 ->
+                                                              el
+                                                              (eval {snoc empty (\ _ -> set)} {\ _ -> set}
+                                                               (var (zero {empty} {\ _ -> set})) g1))}
+                                                          {\ _ -> set}
+                                                          (var
+                                                           (suc {snoc empty (\ _ -> set)}
+                                                            {\ z2 ->
+                                                               el
+                                                               (eval {snoc empty (\ _ -> set)} {\ _ -> set}
+                                                                (var (zero {empty} {\ _ -> set})) z2)}
+                                                            {\ _ -> set} (zero {empty} {\ _ -> set})))
+                                                          (pair z1 v1)))
+                                                        (\ v2 -> set)))}
+                                                 {\ _ -> set}
+                                                 (var
+                                                  (suc {snoc empty (\ _ -> set)}
+                                                   {\ z1 ->
+                                                      pi
+                                                      (el
+                                                       (eval {snoc empty (\ _ -> set)} {\ _ -> set}
+                                                        (var (zero {empty} {\ _ -> set})) z1))
+                                                      (\ v1 ->
+                                                         pi
+                                                         (el
+                                                          (eval
+                                                           {snoc (snoc empty (\ _ -> set))
+                                                            (\ g1 ->
+                                                               el
+                                                               (eval {snoc empty (\ _ -> set)} {\ _ -> set}
+                                                                (var (zero {empty} {\ _ -> set})) g1))}
+                                                           {\ _ -> set}
+                                                           (var
+                                                            (suc {snoc empty (\ _ -> set)}
+                                                             {\ z2 ->
+                                                                el
+                                                                (eval {snoc empty (\ _ -> set)} {\ _ -> set}
+                                                                 (var (zero {empty} {\ _ -> set})) z2)}
+                                                             {\ _ -> set} (zero {empty} {\ _ -> set})))
+                                                           (pair z1 v1)))
+                                                         (\ v2 -> set))}
+                                                   {\ g1 -> set} (zero {empty} {\ _ -> set})))
+                                                 z)})))
+                                          (pair (pair g v) v1))))} set'
      -- Morphisms.
-  (sigma' (pi' (el' (var zero)) (pi' (el' (var (suc zero))) set'))
+  (sigma' {snoc empty (\ _ -> set)} {\ g ->
+                                        pi
+                                        (el
+                                         (eval {snoc empty (\ _ -> set)} {\ _ -> set}
+                                          (var (zero {empty} {\ _ -> set})) g))
+                                        (\ v ->
+                                           pi
+                                           (el
+                                            (eval
+                                             {snoc (snoc empty (\ _ -> set))
+                                              (\ g1 ->
+                                                 el
+                                                 (eval {snoc empty (\ _ -> set)} {\ _ -> set}
+                                                  (var (zero {empty} {\ _ -> set})) g1))}
+                                             {\ _ -> set}
+                                             (var
+                                              (suc {snoc empty (\ _ -> set)}
+                                               {\ z ->
+                                                  el
+                                                  (eval {snoc empty (\ _ -> set)} {\ _ -> set}
+                                                   (var (zero {empty} {\ _ -> set})) z)}
+                                               {\ _ -> set} (zero {empty} {\ _ -> set})))
+                                             (pair g v)))
+                                           (\ v1 -> set))} {\ g ->
+                                                               pi
+                                                               (el
+                                                                (eval
+                                                                 {snoc (snoc empty (\ _ -> set))
+                                                                  (\ z ->
+                                                                     pi
+                                                                     (el
+                                                                      (eval {snoc empty (\ _ -> set)} {\ _ -> set}
+                                                                       (var (zero {empty} {\ _ -> set})) z))
+                                                                     (\ v ->
+                                                                        pi
+                                                                        (el
+                                                                         (eval
+                                                                          {snoc (snoc empty (\ _ -> set))
+                                                                           (\ g1 ->
+                                                                              el
+                                                                              (eval {snoc empty (\ _ -> set)} {\ _ -> set}
+                                                                               (var (zero {empty} {\ _ -> set})) g1))}
+                                                                          {\ _ -> set}
+                                                                          (var
+                                                                           (suc {snoc empty (\ _ -> set)}
+                                                                            {\ z1 ->
+                                                                               el
+                                                                               (eval {snoc empty (\ _ -> set)} {\ _ -> set}
+                                                                                (var (zero {empty} {\ _ -> set})) z1)}
+                                                                            {\ _ -> set} (zero {empty} {\ _ -> set})))
+                                                                          (pair z v)))
+                                                                        (\ v1 -> set)))}
+                                                                 {\ _ -> set}
+                                                                 (var
+                                                                  (suc {snoc empty (\ _ -> set)}
+                                                                   {\ z ->
+                                                                      pi
+                                                                      (el
+                                                                       (eval {snoc empty (\ _ -> set)} {\ _ -> set}
+                                                                        (var (zero {empty} {\ _ -> set})) z))
+                                                                      (\ v ->
+                                                                         pi
+                                                                         (el
+                                                                          (eval
+                                                                           {snoc (snoc empty (\ _ -> set))
+                                                                            (\ g1 ->
+                                                                               el
+                                                                               (eval {snoc empty (\ _ -> set)} {\ _ -> set}
+                                                                                (var (zero {empty} {\ _ -> set})) g1))}
+                                                                           {\ _ -> set}
+                                                                           (var
+                                                                            (suc {snoc empty (\ _ -> set)}
+                                                                             {\ z1 ->
+                                                                                el
+                                                                                (eval {snoc empty (\ _ -> set)} {\ _ -> set}
+                                                                                 (var (zero {empty} {\ _ -> set})) z1)}
+                                                                             {\ _ -> set} (zero {empty} {\ _ -> set})))
+                                                                           (pair z v)))
+                                                                         (\ v1 -> set))}
+                                                                   {\ g1 -> set} (zero {empty} {\ _ -> set})))
+                                                                 g))
+                                                               (\ v ->
+                                                                  el
+                                                                  (eval
+                                                                   {snoc
+                                                                    (snoc (snoc empty (\ _ -> set))
+                                                                     (\ z ->
+                                                                        pi
+                                                                        (el
+                                                                         (eval {snoc empty (\ _ -> set)} {\ _ -> set}
+                                                                          (var (zero {empty} {\ _ -> set})) z))
+                                                                        (\ v1 ->
+                                                                           pi
+                                                                           (el
+                                                                            (eval
+                                                                             {snoc (snoc empty (\ _ -> set))
+                                                                              (\ g1 ->
+                                                                                 el
+                                                                                 (eval {snoc empty (\ _ -> set)} {\ _ -> set}
+                                                                                  (var (zero {empty} {\ _ -> set})) g1))}
+                                                                             {\ _ -> set}
+                                                                             (var
+                                                                              (suc {snoc empty (\ _ -> set)}
+                                                                               {\ z1 ->
+                                                                                  el
+                                                                                  (eval {snoc empty (\ _ -> set)} {\ _ -> set}
+                                                                                   (var (zero {empty} {\ _ -> set})) z1)}
+                                                                               {\ _ -> set} (zero {empty} {\ _ -> set})))
+                                                                             (pair z v1)))
+                                                                           (\ v2 -> set))))
+                                                                    (\ z ->
+                                                                       el
+                                                                       (eval
+                                                                        {snoc (snoc empty (\ _ -> set))
+                                                                         (\ z1 ->
+                                                                            pi
+                                                                            (el
+                                                                             (eval {snoc empty (\ _ -> set)} {\ _ -> set}
+                                                                              (var (zero {empty} {\ _ -> set})) z1))
+                                                                            (\ v1 ->
+                                                                               pi
+                                                                               (el
+                                                                                (eval
+                                                                                 {snoc (snoc empty (\ _ -> set))
+                                                                                  (\ g1 ->
+                                                                                     el
+                                                                                     (eval {snoc empty (\ _ -> set)} {\ _ -> set}
+                                                                                      (var (zero {empty} {\ _ -> set})) g1))}
+                                                                                 {\ _ -> set}
+                                                                                 (var
+                                                                                  (suc {snoc empty (\ _ -> set)}
+                                                                                   {\ z2 ->
+                                                                                      el
+                                                                                      (eval {snoc empty (\ _ -> set)} {\ _ -> set}
+                                                                                       (var (zero {empty} {\ _ -> set})) z2)}
+                                                                                   {\ _ -> set} (zero {empty} {\ _ -> set})))
+                                                                                 (pair z1 v1)))
+                                                                               (\ v2 -> set)))}
+                                                                        {\ _ -> set}
+                                                                        (var
+                                                                         (suc {snoc empty (\ _ -> set)}
+                                                                          {\ z1 ->
+                                                                             pi
+                                                                             (el
+                                                                              (eval {snoc empty (\ _ -> set)} {\ _ -> set}
+                                                                               (var (zero {empty} {\ _ -> set})) z1))
+                                                                             (\ v1 ->
+                                                                                pi
+                                                                                (el
+                                                                                 (eval
+                                                                                  {snoc (snoc empty (\ _ -> set))
+                                                                                   (\ g1 ->
+                                                                                      el
+                                                                                      (eval {snoc empty (\ _ -> set)} {\ _ -> set}
+                                                                                       (var (zero {empty} {\ _ -> set})) g1))}
+                                                                                  {\ _ -> set}
+                                                                                  (var
+                                                                                   (suc {snoc empty (\ _ -> set)}
+                                                                                    {\ z2 ->
+                                                                                       el
+                                                                                       (eval {snoc empty (\ _ -> set)} {\ _ -> set}
+                                                                                        (var (zero {empty} {\ _ -> set})) z2)}
+                                                                                    {\ _ -> set} (zero {empty} {\ _ -> set})))
+                                                                                  (pair z1 v1)))
+                                                                                (\ v2 -> set))}
+                                                                          {\ g1 -> set} (zero {empty} {\ _ -> set})))
+                                                                        z))}
+                                                                   {\ _ -> set}
+                                                                   (app
+                                                                    {snoc
+                                                                     (snoc (snoc empty (\ _ -> set))
+                                                                      (\ z ->
+                                                                         pi
+                                                                         (el
+                                                                          (eval {snoc empty (\ _ -> set)} {\ _ -> set}
+                                                                           (var (zero {empty} {\ _ -> set})) z))
+                                                                         (\ v1 ->
+                                                                            pi
+                                                                            (el
+                                                                             (eval
+                                                                              {snoc (snoc empty (\ _ -> set))
+                                                                               (\ g1 ->
+                                                                                  el
+                                                                                  (eval {snoc empty (\ _ -> set)} {\ _ -> set}
+                                                                                   (var (zero {empty} {\ _ -> set})) g1))}
+                                                                              {\ _ -> set}
+                                                                              (var
+                                                                               (suc {snoc empty (\ _ -> set)}
+                                                                                {\ z1 ->
+                                                                                   el
+                                                                                   (eval {snoc empty (\ _ -> set)} {\ _ -> set}
+                                                                                    (var (zero {empty} {\ _ -> set})) z1)}
+                                                                                {\ _ -> set} (zero {empty} {\ _ -> set})))
+                                                                              (pair z v1)))
+                                                                            (\ v2 -> set))))
+                                                                     (\ z ->
+                                                                        el
+                                                                        (eval
+                                                                         {snoc (snoc empty (\ _ -> set))
+                                                                          (\ z1 ->
+                                                                             pi
+                                                                             (el
+                                                                              (eval {snoc empty (\ _ -> set)} {\ _ -> set}
+                                                                               (var (zero {empty} {\ _ -> set})) z1))
+                                                                             (\ v1 ->
+                                                                                pi
+                                                                                (el
+                                                                                 (eval
+                                                                                  {snoc (snoc empty (\ _ -> set))
+                                                                                   (\ g1 ->
+                                                                                      el
+                                                                                      (eval {snoc empty (\ _ -> set)} {\ _ -> set}
+                                                                                       (var (zero {empty} {\ _ -> set})) g1))}
+                                                                                  {\ _ -> set}
+                                                                                  (var
+                                                                                   (suc {snoc empty (\ _ -> set)}
+                                                                                    {\ z2 ->
+                                                                                       el
+                                                                                       (eval {snoc empty (\ _ -> set)} {\ _ -> set}
+                                                                                        (var (zero {empty} {\ _ -> set})) z2)}
+                                                                                    {\ _ -> set} (zero {empty} {\ _ -> set})))
+                                                                                  (pair z1 v1)))
+                                                                                (\ v2 -> set)))}
+                                                                         {\ _ -> set}
+                                                                         (var
+                                                                          (suc {snoc empty (\ _ -> set)}
+                                                                           {\ z1 ->
+                                                                              pi
+                                                                              (el
+                                                                               (eval {snoc empty (\ _ -> set)} {\ _ -> set}
+                                                                                (var (zero {empty} {\ _ -> set})) z1))
+                                                                              (\ v1 ->
+                                                                                 pi
+                                                                                 (el
+                                                                                  (eval
+                                                                                   {snoc (snoc empty (\ _ -> set))
+                                                                                    (\ g1 ->
+                                                                                       el
+                                                                                       (eval {snoc empty (\ _ -> set)} {\ _ -> set}
+                                                                                        (var (zero {empty} {\ _ -> set})) g1))}
+                                                                                   {\ _ -> set}
+                                                                                   (var
+                                                                                    (suc {snoc empty (\ _ -> set)}
+                                                                                     {\ z2 ->
+                                                                                        el
+                                                                                        (eval {snoc empty (\ _ -> set)} {\ _ -> set}
+                                                                                         (var (zero {empty} {\ _ -> set})) z2)}
+                                                                                     {\ _ -> set} (zero {empty} {\ _ -> set})))
+                                                                                   (pair z1 v1)))
+                                                                                 (\ v2 -> set))}
+                                                                           {\ g1 -> set} (zero {empty} {\ _ -> set})))
+                                                                         z))}
+                                                                    {\ g1 ->
+                                                                       el
+                                                                       (eval
+                                                                        {snoc (snoc empty (\ _ -> set))
+                                                                         (\ z ->
+                                                                            pi
+                                                                            (el
+                                                                             (eval {snoc empty (\ _ -> set)} {\ _ -> set}
+                                                                              (var (zero {empty} {\ _ -> set})) z))
+                                                                            (\ v1 ->
+                                                                               pi
+                                                                               (el
+                                                                                (eval
+                                                                                 {snoc (snoc empty (\ _ -> set))
+                                                                                  (\ g2 ->
+                                                                                     el
+                                                                                     (eval {snoc empty (\ _ -> set)} {\ _ -> set}
+                                                                                      (var (zero {empty} {\ _ -> set})) g2))}
+                                                                                 {\ _ -> set}
+                                                                                 (var
+                                                                                  (suc {snoc empty (\ _ -> set)}
+                                                                                   {\ z1 ->
+                                                                                      el
+                                                                                      (eval {snoc empty (\ _ -> set)} {\ _ -> set}
+                                                                                       (var (zero {empty} {\ _ -> set})) z1)}
+                                                                                   {\ _ -> set} (zero {empty} {\ _ -> set})))
+                                                                                 (pair z v1)))
+                                                                               (\ v2 -> set)))}
+                                                                        {\ _ -> set}
+                                                                        (var
+                                                                         (suc {snoc empty (\ _ -> set)}
+                                                                          {\ z ->
+                                                                             pi
+                                                                             (el
+                                                                              (eval {snoc empty (\ _ -> set)} {\ _ -> set}
+                                                                               (var (zero {empty} {\ _ -> set})) z))
+                                                                             (\ v1 ->
+                                                                                pi
+                                                                                (el
+                                                                                 (eval
+                                                                                  {snoc (snoc empty (\ _ -> set))
+                                                                                   (\ g2 ->
+                                                                                      el
+                                                                                      (eval {snoc empty (\ _ -> set)} {\ _ -> set}
+                                                                                       (var (zero {empty} {\ _ -> set})) g2))}
+                                                                                  {\ _ -> set}
+                                                                                  (var
+                                                                                   (suc {snoc empty (\ _ -> set)}
+                                                                                    {\ z1 ->
+                                                                                       el
+                                                                                       (eval {snoc empty (\ _ -> set)} {\ _ -> set}
+                                                                                        (var (zero {empty} {\ _ -> set})) z1)}
+                                                                                    {\ _ -> set} (zero {empty} {\ _ -> set})))
+                                                                                  (pair z v1)))
+                                                                                (\ v2 -> set))}
+                                                                          {\ g2 -> set} (zero {empty} {\ _ -> set})))
+                                                                        (fst g1))}
+                                                                    {\ g1 v1 -> set}
+                                                                    (app
+                                                                     {snoc
+                                                                      (snoc (snoc empty (\ _ -> set))
+                                                                       (\ z ->
+                                                                          pi
+                                                                          (el
+                                                                           (eval {snoc empty (\ _ -> set)} {\ _ -> set}
+                                                                            (var (zero {empty} {\ _ -> set})) z))
+                                                                          (\ v1 ->
+                                                                             pi
+                                                                             (el
+                                                                              (eval
+                                                                               {snoc (snoc empty (\ _ -> set))
+                                                                                (\ g1 ->
+                                                                                   el
+                                                                                   (eval {snoc empty (\ _ -> set)} {\ _ -> set}
+                                                                                    (var (zero {empty} {\ _ -> set})) g1))}
+                                                                               {\ _ -> set}
+                                                                               (var
+                                                                                (suc {snoc empty (\ _ -> set)}
+                                                                                 {\ z1 ->
+                                                                                    el
+                                                                                    (eval {snoc empty (\ _ -> set)} {\ _ -> set}
+                                                                                     (var (zero {empty} {\ _ -> set})) z1)}
+                                                                                 {\ _ -> set} (zero {empty} {\ _ -> set})))
+                                                                               (pair z v1)))
+                                                                             (\ v2 -> set))))
+                                                                      (\ z ->
+                                                                         el
+                                                                         (eval
+                                                                          {snoc (snoc empty (\ _ -> set))
+                                                                           (\ z1 ->
+                                                                              pi
+                                                                              (el
+                                                                               (eval {snoc empty (\ _ -> set)} {\ _ -> set}
+                                                                                (var (zero {empty} {\ _ -> set})) z1))
+                                                                              (\ v1 ->
+                                                                                 pi
+                                                                                 (el
+                                                                                  (eval
+                                                                                   {snoc (snoc empty (\ _ -> set))
+                                                                                    (\ g1 ->
+                                                                                       el
+                                                                                       (eval {snoc empty (\ _ -> set)} {\ _ -> set}
+                                                                                        (var (zero {empty} {\ _ -> set})) g1))}
+                                                                                   {\ _ -> set}
+                                                                                   (var
+                                                                                    (suc {snoc empty (\ _ -> set)}
+                                                                                     {\ z2 ->
+                                                                                        el
+                                                                                        (eval {snoc empty (\ _ -> set)} {\ _ -> set}
+                                                                                         (var (zero {empty} {\ _ -> set})) z2)}
+                                                                                     {\ _ -> set} (zero {empty} {\ _ -> set})))
+                                                                                   (pair z1 v1)))
+                                                                                 (\ v2 -> set)))}
+                                                                          {\ _ -> set}
+                                                                          (var
+                                                                           (suc {snoc empty (\ _ -> set)}
+                                                                            {\ z1 ->
+                                                                               pi
+                                                                               (el
+                                                                                (eval {snoc empty (\ _ -> set)} {\ _ -> set}
+                                                                                 (var (zero {empty} {\ _ -> set})) z1))
+                                                                               (\ v1 ->
+                                                                                  pi
+                                                                                  (el
+                                                                                   (eval
+                                                                                    {snoc (snoc empty (\ _ -> set))
+                                                                                     (\ g1 ->
+                                                                                        el
+                                                                                        (eval {snoc empty (\ _ -> set)} {\ _ -> set}
+                                                                                         (var (zero {empty} {\ _ -> set})) g1))}
+                                                                                    {\ _ -> set}
+                                                                                    (var
+                                                                                     (suc {snoc empty (\ _ -> set)}
+                                                                                      {\ z2 ->
+                                                                                         el
+                                                                                         (eval {snoc empty (\ _ -> set)} {\ _ -> set}
+                                                                                          (var (zero {empty} {\ _ -> set})) z2)}
+                                                                                      {\ _ -> set} (zero {empty} {\ _ -> set})))
+                                                                                    (pair z1 v1)))
+                                                                                  (\ v2 -> set))}
+                                                                            {\ g1 -> set} (zero {empty} {\ _ -> set})))
+                                                                          z))}
+                                                                     {\ g1 ->
+                                                                        el
+                                                                        (eval
+                                                                         {snoc (snoc empty (\ _ -> set))
+                                                                          (\ z ->
+                                                                             pi
+                                                                             (el
+                                                                              (eval {snoc empty (\ _ -> set)} {\ _ -> set}
+                                                                               (var (zero {empty} {\ _ -> set})) z))
+                                                                             (\ v1 ->
+                                                                                pi
+                                                                                (el
+                                                                                 (eval
+                                                                                  {snoc (snoc empty (\ _ -> set))
+                                                                                   (\ g2 ->
+                                                                                      el
+                                                                                      (eval {snoc empty (\ _ -> set)} {\ _ -> set}
+                                                                                       (var (zero {empty} {\ _ -> set})) g2))}
+                                                                                  {\ _ -> set}
+                                                                                  (var
+                                                                                   (suc {snoc empty (\ _ -> set)}
+                                                                                    {\ z1 ->
+                                                                                       el
+                                                                                       (eval {snoc empty (\ _ -> set)} {\ _ -> set}
+                                                                                        (var (zero {empty} {\ _ -> set})) z1)}
+                                                                                    {\ _ -> set} (zero {empty} {\ _ -> set})))
+                                                                                  (pair z v1)))
+                                                                                (\ v2 -> set)))}
+                                                                         {\ _ -> set}
+                                                                         (var
+                                                                          (suc {snoc empty (\ _ -> set)}
+                                                                           {\ z ->
+                                                                              pi
+                                                                              (el
+                                                                               (eval {snoc empty (\ _ -> set)} {\ _ -> set}
+                                                                                (var (zero {empty} {\ _ -> set})) z))
+                                                                              (\ v1 ->
+                                                                                 pi
+                                                                                 (el
+                                                                                  (eval
+                                                                                   {snoc (snoc empty (\ _ -> set))
+                                                                                    (\ g2 ->
+                                                                                       el
+                                                                                       (eval {snoc empty (\ _ -> set)} {\ _ -> set}
+                                                                                        (var (zero {empty} {\ _ -> set})) g2))}
+                                                                                   {\ _ -> set}
+                                                                                   (var
+                                                                                    (suc {snoc empty (\ _ -> set)}
+                                                                                     {\ z1 ->
+                                                                                        el
+                                                                                        (eval {snoc empty (\ _ -> set)} {\ _ -> set}
+                                                                                         (var (zero {empty} {\ _ -> set})) z1)}
+                                                                                     {\ _ -> set} (zero {empty} {\ _ -> set})))
+                                                                                   (pair z v1)))
+                                                                                 (\ v2 -> set))}
+                                                                           {\ g2 -> set} (zero {empty} {\ _ -> set})))
+                                                                         (fst g1))}
+                                                                     {\ g1 v1 ->
+                                                                        pi
+                                                                        (el
+                                                                         (eval
+                                                                          {snoc (snoc empty (\ _ -> set))
+                                                                           (\ g2 ->
+                                                                              el
+                                                                              (eval {snoc empty (\ _ -> set)} {\ _ -> set}
+                                                                               (var (zero {empty} {\ _ -> set})) g2))}
+                                                                          {\ _ -> set}
+                                                                          (var
+                                                                           (suc {snoc empty (\ _ -> set)}
+                                                                            {\ z ->
+                                                                               el
+                                                                               (eval {snoc empty (\ _ -> set)} {\ _ -> set}
+                                                                                (var (zero {empty} {\ _ -> set})) z)}
+                                                                            {\ _ -> set} (zero {empty} {\ _ -> set})))
+                                                                          (pair (fst (fst g1)) v1)))
+                                                                        (\ v2 -> set)}
+                                                                     (var
+                                                                      (suc
+                                                                       {snoc (snoc empty (\ _ -> set))
+                                                                        (\ z ->
+                                                                           pi
+                                                                           (el
+                                                                            (eval {snoc empty (\ _ -> set)} {\ _ -> set}
+                                                                             (var (zero {empty} {\ _ -> set})) z))
+                                                                           (\ v1 ->
+                                                                              pi
+                                                                              (el
+                                                                               (eval
+                                                                                {snoc (snoc empty (\ _ -> set))
+                                                                                 (\ g1 ->
+                                                                                    el
+                                                                                    (eval {snoc empty (\ _ -> set)} {\ _ -> set}
+                                                                                     (var (zero {empty} {\ _ -> set})) g1))}
+                                                                                {\ _ -> set}
+                                                                                (var
+                                                                                 (suc {snoc empty (\ _ -> set)}
+                                                                                  {\ z1 ->
+                                                                                     el
+                                                                                     (eval {snoc empty (\ _ -> set)} {\ _ -> set}
+                                                                                      (var (zero {empty} {\ _ -> set})) z1)}
+                                                                                  {\ _ -> set} (zero {empty} {\ _ -> set})))
+                                                                                (pair z v1)))
+                                                                              (\ v2 -> set)))}
+                                                                       {\ z ->
+                                                                          el
+                                                                          (eval
+                                                                           {snoc (snoc empty (\ _ -> set))
+                                                                            (\ z1 ->
+                                                                               pi
+                                                                               (el
+                                                                                (eval {snoc empty (\ _ -> set)} {\ _ -> set}
+                                                                                 (var (zero {empty} {\ _ -> set})) z1))
+                                                                               (\ v1 ->
+                                                                                  pi
+                                                                                  (el
+                                                                                   (eval
+                                                                                    {snoc (snoc empty (\ _ -> set))
+                                                                                     (\ g1 ->
+                                                                                        el
+                                                                                        (eval {snoc empty (\ _ -> set)} {\ _ -> set}
+                                                                                         (var (zero {empty} {\ _ -> set})) g1))}
+                                                                                    {\ _ -> set}
+                                                                                    (var
+                                                                                     (suc {snoc empty (\ _ -> set)}
+                                                                                      {\ z2 ->
+                                                                                         el
+                                                                                         (eval {snoc empty (\ _ -> set)} {\ _ -> set}
+                                                                                          (var (zero {empty} {\ _ -> set})) z2)}
+                                                                                      {\ _ -> set} (zero {empty} {\ _ -> set})))
+                                                                                    (pair z1 v1)))
+                                                                                  (\ v2 -> set)))}
+                                                                           {\ _ -> set}
+                                                                           (var
+                                                                            (suc {snoc empty (\ _ -> set)}
+                                                                             {\ z1 ->
+                                                                                pi
+                                                                                (el
+                                                                                 (eval {snoc empty (\ _ -> set)} {\ _ -> set}
+                                                                                  (var (zero {empty} {\ _ -> set})) z1))
+                                                                                (\ v1 ->
+                                                                                   pi
+                                                                                   (el
+                                                                                    (eval
+                                                                                     {snoc (snoc empty (\ _ -> set))
+                                                                                      (\ g1 ->
+                                                                                         el
+                                                                                         (eval {snoc empty (\ _ -> set)} {\ _ -> set}
+                                                                                          (var (zero {empty} {\ _ -> set})) g1))}
+                                                                                     {\ _ -> set}
+                                                                                     (var
+                                                                                      (suc {snoc empty (\ _ -> set)}
+                                                                                       {\ z2 ->
+                                                                                          el
+                                                                                          (eval {snoc empty (\ _ -> set)} {\ _ -> set}
+                                                                                           (var (zero {empty} {\ _ -> set})) z2)}
+                                                                                       {\ _ -> set} (zero {empty} {\ _ -> set})))
+                                                                                     (pair z1 v1)))
+                                                                                   (\ v2 -> set))}
+                                                                             {\ g1 -> set} (zero {empty} {\ _ -> set})))
+                                                                           z)}
+                                                                       {\ g1 ->
+                                                                          pi
+                                                                          (el
+                                                                           (eval {snoc empty (\ _ -> set)} {\ _ -> set}
+                                                                            (var (zero {empty} {\ _ -> set})) (fst g1)))
+                                                                          (\ v1 ->
+                                                                             pi
+                                                                             (el
+                                                                              (eval
+                                                                               {snoc (snoc empty (\ _ -> set))
+                                                                                (\ g2 ->
+                                                                                   el
+                                                                                   (eval {snoc empty (\ _ -> set)} {\ _ -> set}
+                                                                                    (var (zero {empty} {\ _ -> set})) g2))}
+                                                                               {\ _ -> set}
+                                                                               (var
+                                                                                (suc {snoc empty (\ _ -> set)}
+                                                                                 {\ z ->
+                                                                                    el
+                                                                                    (eval {snoc empty (\ _ -> set)} {\ _ -> set}
+                                                                                     (var (zero {empty} {\ _ -> set})) z)}
+                                                                                 {\ _ -> set} (zero {empty} {\ _ -> set})))
+                                                                               (pair (fst g1) v1)))
+                                                                             (\ v2 -> set))}
+                                                                       (zero {snoc empty (\ _ -> set)}
+                                                                        {\ z ->
+                                                                           pi
+                                                                           (el
+                                                                            (eval {snoc empty (\ _ -> set)} {\ _ -> set}
+                                                                             (var (zero {empty} {\ _ -> set})) z))
+                                                                           (\ v1 ->
+                                                                              pi
+                                                                              (el
+                                                                               (eval
+                                                                                {snoc (snoc empty (\ _ -> set))
+                                                                                 (\ g1 ->
+                                                                                    el
+                                                                                    (eval {snoc empty (\ _ -> set)} {\ _ -> set}
+                                                                                     (var (zero {empty} {\ _ -> set})) g1))}
+                                                                                {\ _ -> set}
+                                                                                (var
+                                                                                 (suc {snoc empty (\ _ -> set)}
+                                                                                  {\ z1 ->
+                                                                                     el
+                                                                                     (eval {snoc empty (\ _ -> set)} {\ _ -> set}
+                                                                                      (var (zero {empty} {\ _ -> set})) z1)}
+                                                                                  {\ _ -> set} (zero {empty} {\ _ -> set})))
+                                                                                (pair z v1)))
+                                                                              (\ v2 -> set))})))
+                                                                     (var
+                                                                      (zero
+                                                                       {snoc (snoc empty (\ v1 -> set))
+                                                                        (\ z ->
+                                                                           pi
+                                                                           (el
+                                                                            (eval {snoc empty (\ _ -> set)} {\ _ -> set}
+                                                                             (var (zero {empty} {\ _ -> set})) z))
+                                                                           (\ v1 ->
+                                                                              pi
+                                                                              (el
+                                                                               (eval
+                                                                                {snoc (snoc empty (\ _ -> set))
+                                                                                 (\ g1 ->
+                                                                                    el
+                                                                                    (eval {snoc empty (\ _ -> set)} {\ _ -> set}
+                                                                                     (var (zero {empty} {\ _ -> set})) g1))}
+                                                                                {\ _ -> set}
+                                                                                (var
+                                                                                 (suc {snoc empty (\ _ -> set)}
+                                                                                  {\ z1 ->
+                                                                                     el
+                                                                                     (eval {snoc empty (\ _ -> set)} {\ _ -> set}
+                                                                                      (var (zero {empty} {\ _ -> set})) z1)}
+                                                                                  {\ _ -> set} (zero {empty} {\ _ -> set})))
+                                                                                (pair z v1)))
+                                                                              (\ v2 -> set)))}
+                                                                       {\ z ->
+                                                                          el
+                                                                          (eval
+                                                                           {snoc (snoc empty (\ _ -> set))
+                                                                            (\ z1 ->
+                                                                               pi
+                                                                               (el
+                                                                                (eval {snoc empty (\ _ -> set)} {\ _ -> set}
+                                                                                 (var (zero {empty} {\ _ -> set})) z1))
+                                                                               (\ v1 ->
+                                                                                  pi
+                                                                                  (el
+                                                                                   (eval
+                                                                                    {snoc (snoc empty (\ _ -> set))
+                                                                                     (\ g1 ->
+                                                                                        el
+                                                                                        (eval {snoc empty (\ _ -> set)} {\ _ -> set}
+                                                                                         (var (zero {empty} {\ _ -> set})) g1))}
+                                                                                    {\ _ -> set}
+                                                                                    (var
+                                                                                     (suc {snoc empty (\ _ -> set)}
+                                                                                      {\ z2 ->
+                                                                                         el
+                                                                                         (eval {snoc empty (\ _ -> set)} {\ _ -> set}
+                                                                                          (var (zero {empty} {\ _ -> set})) z2)}
+                                                                                      {\ _ -> set} (zero {empty} {\ _ -> set})))
+                                                                                    (pair z1 v1)))
+                                                                                  (\ v2 -> set)))}
+                                                                           {\ _ -> set}
+                                                                           (var
+                                                                            (suc {snoc empty (\ _ -> set)}
+                                                                             {\ z1 ->
+                                                                                pi
+                                                                                (el
+                                                                                 (eval {snoc empty (\ _ -> set)} {\ _ -> set}
+                                                                                  (var (zero {empty} {\ _ -> set})) z1))
+                                                                                (\ v1 ->
+                                                                                   pi
+                                                                                   (el
+                                                                                    (eval
+                                                                                     {snoc (snoc empty (\ _ -> set))
+                                                                                      (\ g1 ->
+                                                                                         el
+                                                                                         (eval {snoc empty (\ _ -> set)} {\ _ -> set}
+                                                                                          (var (zero {empty} {\ _ -> set})) g1))}
+                                                                                     {\ _ -> set}
+                                                                                     (var
+                                                                                      (suc {snoc empty (\ _ -> set)}
+                                                                                       {\ z2 ->
+                                                                                          el
+                                                                                          (eval {snoc empty (\ _ -> set)} {\ _ -> set}
+                                                                                           (var (zero {empty} {\ _ -> set})) z2)}
+                                                                                       {\ _ -> set} (zero {empty} {\ _ -> set})))
+                                                                                     (pair z1 v1)))
+                                                                                   (\ v2 -> set))}
+                                                                             {\ g1 -> set} (zero {empty} {\ _ -> set})))
+                                                                           z)})))
+                                                                    (var
+                                                                     (zero
+                                                                      {snoc (snoc empty (\ v1 -> set))
+                                                                       (\ z ->
+                                                                          pi
+                                                                          (el
+                                                                           (eval {snoc empty (\ _ -> set)} {\ _ -> set}
+                                                                            (var (zero {empty} {\ _ -> set})) z))
+                                                                          (\ v1 ->
+                                                                             pi
+                                                                             (el
+                                                                              (eval
+                                                                               {snoc (snoc empty (\ _ -> set))
+                                                                                (\ g1 ->
+                                                                                   el
+                                                                                   (eval {snoc empty (\ _ -> set)} {\ _ -> set}
+                                                                                    (var (zero {empty} {\ _ -> set})) g1))}
+                                                                               {\ _ -> set}
+                                                                               (var
+                                                                                (suc {snoc empty (\ _ -> set)}
+                                                                                 {\ z1 ->
+                                                                                    el
+                                                                                    (eval {snoc empty (\ _ -> set)} {\ _ -> set}
+                                                                                     (var (zero {empty} {\ _ -> set})) z1)}
+                                                                                 {\ _ -> set} (zero {empty} {\ _ -> set})))
+                                                                               (pair z v1)))
+                                                                             (\ v2 -> set)))}
+                                                                      {\ z ->
+                                                                         el
+                                                                         (eval
+                                                                          {snoc (snoc empty (\ _ -> set))
+                                                                           (\ z1 ->
+                                                                              pi
+                                                                              (el
+                                                                               (eval {snoc empty (\ _ -> set)} {\ _ -> set}
+                                                                                (var (zero {empty} {\ _ -> set})) z1))
+                                                                              (\ v1 ->
+                                                                                 pi
+                                                                                 (el
+                                                                                  (eval
+                                                                                   {snoc (snoc empty (\ _ -> set))
+                                                                                    (\ g1 ->
+                                                                                       el
+                                                                                       (eval {snoc empty (\ _ -> set)} {\ _ -> set}
+                                                                                        (var (zero {empty} {\ _ -> set})) g1))}
+                                                                                   {\ _ -> set}
+                                                                                   (var
+                                                                                    (suc {snoc empty (\ _ -> set)}
+                                                                                     {\ z2 ->
+                                                                                        el
+                                                                                        (eval {snoc empty (\ _ -> set)} {\ _ -> set}
+                                                                                         (var (zero {empty} {\ _ -> set})) z2)}
+                                                                                     {\ _ -> set} (zero {empty} {\ _ -> set})))
+                                                                                   (pair z1 v1)))
+                                                                                 (\ v2 -> set)))}
+                                                                          {\ _ -> set}
+                                                                          (var
+                                                                           (suc {snoc empty (\ _ -> set)}
+                                                                            {\ z1 ->
+                                                                               pi
+                                                                               (el
+                                                                                (eval {snoc empty (\ _ -> set)} {\ _ -> set}
+                                                                                 (var (zero {empty} {\ _ -> set})) z1))
+                                                                               (\ v1 ->
+                                                                                  pi
+                                                                                  (el
+                                                                                   (eval
+                                                                                    {snoc (snoc empty (\ _ -> set))
+                                                                                     (\ g1 ->
+                                                                                        el
+                                                                                        (eval {snoc empty (\ _ -> set)} {\ _ -> set}
+                                                                                         (var (zero {empty} {\ _ -> set})) g1))}
+                                                                                    {\ _ -> set}
+                                                                                    (var
+                                                                                     (suc {snoc empty (\ _ -> set)}
+                                                                                      {\ z2 ->
+                                                                                         el
+                                                                                         (eval {snoc empty (\ _ -> set)} {\ _ -> set}
+                                                                                          (var (zero {empty} {\ _ -> set})) z2)}
+                                                                                      {\ _ -> set} (zero {empty} {\ _ -> set})))
+                                                                                    (pair z1 v1)))
+                                                                                  (\ v2 -> set))}
+                                                                            {\ g1 -> set} (zero {empty} {\ _ -> set})))
+                                                                          z)})))
+                                                                   (pair g v)))} (pi' (el' (var (zero {empty} {\_ -> set})))
+
+    (pi' {snoc (snoc empty (\_ -> set)) (\x -> _)} {\x -> _} {\_ -> set}
+      (el' {snoc (snoc empty (\_ -> set)) (\g -> el
+                                                   (eval {snoc empty (\ _ -> set)} {\ _ -> set}
+                                                    (var (zero {empty} {\ _ -> set})) g))} (var (suc {snoc empty (\_ -> set)} {\z -> ?} {\_ -> set} (zero {empty} {\_ -> set})))) set'))
      -- Identity.
-  (pi' (el' (var (suc zero)))
-       (el' (app (app (var (suc zero)) (var zero)) (var zero)))))
+  (pi' {snoc (snoc empty (\ z -> set))
+          (\ z ->
+             pi
+             (el
+              (eval {snoc empty (\ _ -> set)} {\ _ -> set}
+               (var (zero {empty} {\ _ -> set})) z))
+             (\ v ->
+                pi
+                (el
+                 (eval
+                  {snoc (snoc empty (\ _ -> set))
+                   (\ g1 ->
+                      el
+                      (eval {snoc empty (\ _ -> set)} {\ _ -> set}
+                       (var (zero {empty} {\ _ -> set})) g1))}
+                  {\ _ -> set}
+                  (var
+                   (suc {snoc empty (\ _ -> set)}
+                    {\ z1 ->
+                       el
+                       (eval {snoc empty (\ _ -> set)} {\ _ -> set}
+                        (var (zero {empty} {\ _ -> set})) z1)}
+                    {\ _ -> set} (zero {empty} {\ _ -> set})))
+                  (pair z v)))
+                (\ v1 -> set)))} {\ g ->
+                                     el
+                                     (eval
+                                      {snoc (snoc empty (\ z -> set))
+                                       (\ z ->
+                                          pi
+                                          (el
+                                           (eval {snoc empty (\ _ -> set)} {\ _ -> set}
+                                            (var (zero {empty} {\ _ -> set})) z))
+                                          (\ v ->
+                                             pi
+                                             (el
+                                              (eval
+                                               {snoc (snoc empty (\ _ -> set))
+                                                (\ g1 ->
+                                                   el
+                                                   (eval {snoc empty (\ _ -> set)} {\ _ -> set}
+                                                    (var (zero {empty} {\ _ -> set})) g1))}
+                                               {\ _ -> set}
+                                               (var
+                                                (suc {snoc empty (\ _ -> set)}
+                                                 {\ z1 ->
+                                                    el
+                                                    (eval {snoc empty (\ _ -> set)} {\ _ -> set}
+                                                     (var (zero {empty} {\ _ -> set})) z1)}
+                                                 {\ _ -> set} (zero {empty} {\ _ -> set})))
+                                               (pair z v)))
+                                             (\ v1 -> set)))}
+                                      {\ _ -> set}
+                                      (var
+                                       (suc {snoc empty (\ _ -> set)}
+                                        {\ z ->
+                                           pi
+                                           (el
+                                            (eval {snoc empty (\ _ -> set)} {\ _ -> set}
+                                             (var (zero {empty} {\ _ -> set})) z))
+                                           (\ v ->
+                                              pi
+                                              (el
+                                               (eval
+                                                {snoc (snoc empty (\ _ -> set))
+                                                 (\ g1 ->
+                                                    el
+                                                    (eval {snoc empty (\ _ -> set)} {\ _ -> set}
+                                                     (var (zero {empty} {\ _ -> set})) g1))}
+                                                {\ _ -> set}
+                                                (var
+                                                 (suc {snoc empty (\ _ -> set)}
+                                                  {\ z1 ->
+                                                     el
+                                                     (eval {snoc empty (\ _ -> set)} {\ _ -> set}
+                                                      (var (zero {empty} {\ _ -> set})) z1)}
+                                                  {\ _ -> set} (zero {empty} {\ _ -> set})))
+                                                (pair z v)))
+                                              (\ v1 -> set))}
+                                        {\ g1 -> set} (zero {empty} {\ _ -> set})))
+                                      g)} {\ g ->
+                                               el
+                                               (eval
+                                                {snoc
+                                                 (snoc (snoc empty (\ _ -> set))
+                                                  (\ z ->
+                                                     pi
+                                                     (el
+                                                      (eval {snoc empty (\ _ -> set)} {\ _ -> set}
+                                                       (var (zero {empty} {\ _ -> set})) z))
+                                                     (\ v ->
+                                                        pi
+                                                        (el
+                                                         (eval
+                                                          {snoc (snoc empty (\ _ -> set))
+                                                           (\ g1 ->
+                                                              el
+                                                              (eval {snoc empty (\ _ -> set)} {\ _ -> set}
+                                                               (var (zero {empty} {\ _ -> set})) g1))}
+                                                          {\ _ -> set}
+                                                          (var
+                                                           (suc {snoc empty (\ _ -> set)}
+                                                            {\ z1 ->
+                                                               el
+                                                               (eval {snoc empty (\ _ -> set)} {\ _ -> set}
+                                                                (var (zero {empty} {\ _ -> set})) z1)}
+                                                            {\ _ -> set} (zero {empty} {\ _ -> set})))
+                                                          (pair z v)))
+                                                        (\ v1 -> set))))
+                                                 (\ z ->
+                                                    el
+                                                    (eval
+                                                     {snoc (snoc empty (\ _ -> set))
+                                                      (\ z1 ->
+                                                         pi
+                                                         (el
+                                                          (eval {snoc empty (\ _ -> set)} {\ _ -> set}
+                                                           (var (zero {empty} {\ _ -> set})) z1))
+                                                         (\ v ->
+                                                            pi
+                                                            (el
+                                                             (eval
+                                                              {snoc (snoc empty (\ _ -> set))
+                                                               (\ g1 ->
+                                                                  el
+                                                                  (eval {snoc empty (\ _ -> set)} {\ _ -> set}
+                                                                   (var (zero {empty} {\ _ -> set})) g1))}
+                                                              {\ _ -> set}
+                                                              (var
+                                                               (suc {snoc empty (\ _ -> set)}
+                                                                {\ z2 ->
+                                                                   el
+                                                                   (eval {snoc empty (\ _ -> set)} {\ _ -> set}
+                                                                    (var (zero {empty} {\ _ -> set})) z2)}
+                                                                {\ _ -> set} (zero {empty} {\ _ -> set})))
+                                                              (pair z1 v)))
+                                                            (\ v1 -> set)))}
+                                                     {\ _ -> set}
+                                                     (var
+                                                      (suc {snoc empty (\ _ -> set)}
+                                                       {\ z1 ->
+                                                          pi
+                                                          (el
+                                                           (eval {snoc empty (\ _ -> set)} {\ _ -> set}
+                                                            (var (zero {empty} {\ _ -> set})) z1))
+                                                          (\ v ->
+                                                             pi
+                                                             (el
+                                                              (eval
+                                                               {snoc (snoc empty (\ _ -> set))
+                                                                (\ g1 ->
+                                                                   el
+                                                                   (eval {snoc empty (\ _ -> set)} {\ _ -> set}
+                                                                    (var (zero {empty} {\ _ -> set})) g1))}
+                                                               {\ _ -> set}
+                                                               (var
+                                                                (suc {snoc empty (\ _ -> set)}
+                                                                 {\ z2 ->
+                                                                    el
+                                                                    (eval {snoc empty (\ _ -> set)} {\ _ -> set}
+                                                                     (var (zero {empty} {\ _ -> set})) z2)}
+                                                                 {\ _ -> set} (zero {empty} {\ _ -> set})))
+                                                               (pair z1 v)))
+                                                             (\ v1 -> set))}
+                                                       {\ g1 -> set} (zero {empty} {\ _ -> set})))
+                                                     z))}
+                                                {\ _ -> set}
+                                                (app
+                                                 {snoc
+                                                  (snoc (snoc empty (\ _ -> set))
+                                                   (\ z ->
+                                                      pi
+                                                      (el
+                                                       (eval {snoc empty (\ _ -> set)} {\ _ -> set}
+                                                        (var (zero {empty} {\ _ -> set})) z))
+                                                      (\ v ->
+                                                         pi
+                                                         (el
+                                                          (eval
+                                                           {snoc (snoc empty (\ _ -> set))
+                                                            (\ g1 ->
+                                                               el
+                                                               (eval {snoc empty (\ _ -> set)} {\ _ -> set}
+                                                                (var (zero {empty} {\ _ -> set})) g1))}
+                                                           {\ _ -> set}
+                                                           (var
+                                                            (suc {snoc empty (\ _ -> set)}
+                                                             {\ z1 ->
+                                                                el
+                                                                (eval {snoc empty (\ _ -> set)} {\ _ -> set}
+                                                                 (var (zero {empty} {\ _ -> set})) z1)}
+                                                             {\ _ -> set} (zero {empty} {\ _ -> set})))
+                                                           (pair z v)))
+                                                         (\ v1 -> set))))
+                                                  (\ z ->
+                                                     el
+                                                     (eval
+                                                      {snoc (snoc empty (\ _ -> set))
+                                                       (\ z1 ->
+                                                          pi
+                                                          (el
+                                                           (eval {snoc empty (\ _ -> set)} {\ _ -> set}
+                                                            (var (zero {empty} {\ _ -> set})) z1))
+                                                          (\ v ->
+                                                             pi
+                                                             (el
+                                                              (eval
+                                                               {snoc (snoc empty (\ _ -> set))
+                                                                (\ g1 ->
+                                                                   el
+                                                                   (eval {snoc empty (\ _ -> set)} {\ _ -> set}
+                                                                    (var (zero {empty} {\ _ -> set})) g1))}
+                                                               {\ _ -> set}
+                                                               (var
+                                                                (suc {snoc empty (\ _ -> set)}
+                                                                 {\ z2 ->
+                                                                    el
+                                                                    (eval {snoc empty (\ _ -> set)} {\ _ -> set}
+                                                                     (var (zero {empty} {\ _ -> set})) z2)}
+                                                                 {\ _ -> set} (zero {empty} {\ _ -> set})))
+                                                               (pair z1 v)))
+                                                             (\ v1 -> set)))}
+                                                      {\ _ -> set}
+                                                      (var
+                                                       (suc {snoc empty (\ _ -> set)}
+                                                        {\ z1 ->
+                                                           pi
+                                                           (el
+                                                            (eval {snoc empty (\ _ -> set)} {\ _ -> set}
+                                                             (var (zero {empty} {\ _ -> set})) z1))
+                                                           (\ v ->
+                                                              pi
+                                                              (el
+                                                               (eval
+                                                                {snoc (snoc empty (\ _ -> set))
+                                                                 (\ g1 ->
+                                                                    el
+                                                                    (eval {snoc empty (\ _ -> set)} {\ _ -> set}
+                                                                     (var (zero {empty} {\ _ -> set})) g1))}
+                                                                {\ _ -> set}
+                                                                (var
+                                                                 (suc {snoc empty (\ _ -> set)}
+                                                                  {\ z2 ->
+                                                                     el
+                                                                     (eval {snoc empty (\ _ -> set)} {\ _ -> set}
+                                                                      (var (zero {empty} {\ _ -> set})) z2)}
+                                                                  {\ _ -> set} (zero {empty} {\ _ -> set})))
+                                                                (pair z1 v)))
+                                                              (\ v1 -> set))}
+                                                        {\ g1 -> set} (zero {empty} {\ _ -> set})))
+                                                      z))}
+                                                 {\ g1 ->
+                                                    el
+                                                    (eval
+                                                     {snoc (snoc empty (\ _ -> set))
+                                                      (\ z ->
+                                                         pi
+                                                         (el
+                                                          (eval {snoc empty (\ _ -> set)} {\ _ -> set}
+                                                           (var (zero {empty} {\ _ -> set})) z))
+                                                         (\ v ->
+                                                            pi
+                                                            (el
+                                                             (eval
+                                                              {snoc (snoc empty (\ _ -> set))
+                                                               (\ g1 ->
+                                                                  el
+                                                                  (eval {snoc empty (\ _ -> set)} {\ _ -> set}
+                                                                   (var (zero {empty} {\ _ -> set})) g1))}
+                                                              {\ _ -> set}
+                                                              (var
+                                                               (suc {snoc empty (\ _ -> set)}
+                                                                {\ z1 ->
+                                                                   el
+                                                                   (eval {snoc empty (\ _ -> set)} {\ _ -> set}
+                                                                    (var (zero {empty} {\ _ -> set})) z1)}
+                                                                {\ _ -> set} (zero {empty} {\ _ -> set})))
+                                                              (pair z v)))
+                                                            (\ v1 -> set)))}
+                                                     {\ _ -> set}
+                                                     (var
+                                                      (suc {snoc empty (\ _ -> set)}
+                                                       {\ z ->
+                                                          pi
+                                                          (el
+                                                           (eval {snoc empty (\ _ -> set)} {\ _ -> set}
+                                                            (var (zero {empty} {\ _ -> set})) z))
+                                                          (\ v ->
+                                                             pi
+                                                             (el
+                                                              (eval
+                                                               {snoc (snoc empty (\ _ -> set))
+                                                                (\ g1 ->
+                                                                   el
+                                                                   (eval {snoc empty (\ _ -> set)} {\ _ -> set}
+                                                                    (var (zero {empty} {\ _ -> set})) g1))}
+                                                               {\ _ -> set}
+                                                               (var
+                                                                (suc {snoc empty (\ _ -> set)}
+                                                                 {\ z1 ->
+                                                                    el
+                                                                    (eval {snoc empty (\ _ -> set)} {\ _ -> set}
+                                                                     (var (zero {empty} {\ _ -> set})) z1)}
+                                                                 {\ _ -> set} (zero {empty} {\ _ -> set})))
+                                                               (pair z v)))
+                                                             (\ v1 -> set))}
+                                                       {\ g2 -> set} (zero {empty} {\ _ -> set})))
+                                                     (fst g1))}
+                                                 {\ g1 v1 -> set}
+                                                 (app
+                                                  {snoc
+                                                   (snoc (snoc empty (\ _ -> set))
+                                                    (\ z ->
+                                                       pi
+                                                       (el
+                                                        (eval {snoc empty (\ _ -> set)} {\ _ -> set}
+                                                         (var (zero {empty} {\ _ -> set})) z))
+                                                       (\ v ->
+                                                          pi
+                                                          (el
+                                                           (eval
+                                                            {snoc (snoc empty (\ _ -> set))
+                                                             (\ g1 ->
+                                                                el
+                                                                (eval {snoc empty (\ _ -> set)} {\ _ -> set}
+                                                                 (var (zero {empty} {\ _ -> set})) g1))}
+                                                            {\ _ -> set}
+                                                            (var
+                                                             (suc {snoc empty (\ _ -> set)}
+                                                              {\ z1 ->
+                                                                 el
+                                                                 (eval {snoc empty (\ _ -> set)} {\ _ -> set}
+                                                                  (var (zero {empty} {\ _ -> set})) z1)}
+                                                              {\ _ -> set} (zero {empty} {\ _ -> set})))
+                                                            (pair z v)))
+                                                          (\ v1 -> set))))
+                                                   (\ z ->
+                                                      el
+                                                      (eval
+                                                       {snoc (snoc empty (\ _ -> set))
+                                                        (\ z1 ->
+                                                           pi
+                                                           (el
+                                                            (eval {snoc empty (\ _ -> set)} {\ _ -> set}
+                                                             (var (zero {empty} {\ _ -> set})) z1))
+                                                           (\ v ->
+                                                              pi
+                                                              (el
+                                                               (eval
+                                                                {snoc (snoc empty (\ _ -> set))
+                                                                 (\ g1 ->
+                                                                    el
+                                                                    (eval {snoc empty (\ _ -> set)} {\ _ -> set}
+                                                                     (var (zero {empty} {\ _ -> set})) g1))}
+                                                                {\ _ -> set}
+                                                                (var
+                                                                 (suc {snoc empty (\ _ -> set)}
+                                                                  {\ z2 ->
+                                                                     el
+                                                                     (eval {snoc empty (\ _ -> set)} {\ _ -> set}
+                                                                      (var (zero {empty} {\ _ -> set})) z2)}
+                                                                  {\ _ -> set} (zero {empty} {\ _ -> set})))
+                                                                (pair z1 v)))
+                                                              (\ v1 -> set)))}
+                                                       {\ _ -> set}
+                                                       (var
+                                                        (suc {snoc empty (\ _ -> set)}
+                                                         {\ z1 ->
+                                                            pi
+                                                            (el
+                                                             (eval {snoc empty (\ _ -> set)} {\ _ -> set}
+                                                              (var (zero {empty} {\ _ -> set})) z1))
+                                                            (\ v ->
+                                                               pi
+                                                               (el
+                                                                (eval
+                                                                 {snoc (snoc empty (\ _ -> set))
+                                                                  (\ g1 ->
+                                                                     el
+                                                                     (eval {snoc empty (\ _ -> set)} {\ _ -> set}
+                                                                      (var (zero {empty} {\ _ -> set})) g1))}
+                                                                 {\ _ -> set}
+                                                                 (var
+                                                                  (suc {snoc empty (\ _ -> set)}
+                                                                   {\ z2 ->
+                                                                      el
+                                                                      (eval {snoc empty (\ _ -> set)} {\ _ -> set}
+                                                                       (var (zero {empty} {\ _ -> set})) z2)}
+                                                                   {\ _ -> set} (zero {empty} {\ _ -> set})))
+                                                                 (pair z1 v)))
+                                                               (\ v1 -> set))}
+                                                         {\ g1 -> set} (zero {empty} {\ _ -> set})))
+                                                       z))}
+                                                  {\ g1 ->
+                                                     el
+                                                     (eval
+                                                      {snoc (snoc empty (\ _ -> set))
+                                                       (\ z ->
+                                                          pi
+                                                          (el
+                                                           (eval {snoc empty (\ _ -> set)} {\ _ -> set}
+                                                            (var (zero {empty} {\ _ -> set})) z))
+                                                          (\ v ->
+                                                             pi
+                                                             (el
+                                                              (eval
+                                                               {snoc (snoc empty (\ _ -> set))
+                                                                (\ g1 ->
+                                                                   el
+                                                                   (eval {snoc empty (\ _ -> set)} {\ _ -> set}
+                                                                    (var (zero {empty} {\ _ -> set})) g1))}
+                                                               {\ _ -> set}
+                                                               (var
+                                                                (suc {snoc empty (\ _ -> set)}
+                                                                 {\ z1 ->
+                                                                    el
+                                                                    (eval {snoc empty (\ _ -> set)} {\ _ -> set}
+                                                                     (var (zero {empty} {\ _ -> set})) z1)}
+                                                                 {\ _ -> set} (zero {empty} {\ _ -> set})))
+                                                               (pair z v)))
+                                                             (\ v1 -> set)))}
+                                                      {\ _ -> set}
+                                                      (var
+                                                       (suc {snoc empty (\ _ -> set)}
+                                                        {\ z ->
+                                                           pi
+                                                           (el
+                                                            (eval {snoc empty (\ _ -> set)} {\ _ -> set}
+                                                             (var (zero {empty} {\ _ -> set})) z))
+                                                           (\ v ->
+                                                              pi
+                                                              (el
+                                                               (eval
+                                                                {snoc (snoc empty (\ _ -> set))
+                                                                 (\ g1 ->
+                                                                    el
+                                                                    (eval {snoc empty (\ _ -> set)} {\ _ -> set}
+                                                                     (var (zero {empty} {\ _ -> set})) g1))}
+                                                                {\ _ -> set}
+                                                                (var
+                                                                 (suc {snoc empty (\ _ -> set)}
+                                                                  {\ z1 ->
+                                                                     el
+                                                                     (eval {snoc empty (\ _ -> set)} {\ _ -> set}
+                                                                      (var (zero {empty} {\ _ -> set})) z1)}
+                                                                  {\ _ -> set} (zero {empty} {\ _ -> set})))
+                                                                (pair z v)))
+                                                              (\ v1 -> set))}
+                                                        {\ g2 -> set} (zero {empty} {\ _ -> set})))
+                                                      (fst g1))}
+                                                  {\ g1 v ->
+                                                     pi
+                                                     (el
+                                                      (eval
+                                                       {snoc (snoc empty (\ _ -> set))
+                                                        (\ g1 ->
+                                                           el
+                                                           (eval {snoc empty (\ _ -> set)} {\ _ -> set}
+                                                            (var (zero {empty} {\ _ -> set})) g1))}
+                                                       {\ _ -> set}
+                                                       (var
+                                                        (suc {snoc empty (\ _ -> set)}
+                                                         {\ z ->
+                                                            el
+                                                            (eval {snoc empty (\ _ -> set)} {\ _ -> set}
+                                                             (var (zero {empty} {\ _ -> set})) z)}
+                                                         {\ _ -> set} (zero {empty} {\ _ -> set})))
+                                                       (pair (fst (fst g1)) v)))
+                                                     (\ v1 -> set)}
+                                                  (var
+                                                   (suc
+                                                    {snoc (snoc empty (\ _ -> set))
+                                                     (\ z ->
+                                                        pi
+                                                        (el
+                                                         (eval {snoc empty (\ _ -> set)} {\ _ -> set}
+                                                          (var (zero {empty} {\ _ -> set})) z))
+                                                        (\ v ->
+                                                           pi
+                                                           (el
+                                                            (eval
+                                                             {snoc (snoc empty (\ _ -> set))
+                                                              (\ g1 ->
+                                                                 el
+                                                                 (eval {snoc empty (\ _ -> set)} {\ _ -> set}
+                                                                  (var (zero {empty} {\ _ -> set})) g1))}
+                                                             {\ _ -> set}
+                                                             (var
+                                                              (suc {snoc empty (\ _ -> set)}
+                                                               {\ z1 ->
+                                                                  el
+                                                                  (eval {snoc empty (\ _ -> set)} {\ _ -> set}
+                                                                   (var (zero {empty} {\ _ -> set})) z1)}
+                                                               {\ _ -> set} (zero {empty} {\ _ -> set})))
+                                                             (pair z v)))
+                                                           (\ v1 -> set)))}
+                                                    {\ z ->
+                                                       el
+                                                       (eval
+                                                        {snoc (snoc empty (\ _ -> set))
+                                                         (\ z1 ->
+                                                            pi
+                                                            (el
+                                                             (eval {snoc empty (\ _ -> set)} {\ _ -> set}
+                                                              (var (zero {empty} {\ _ -> set})) z1))
+                                                            (\ v ->
+                                                               pi
+                                                               (el
+                                                                (eval
+                                                                 {snoc (snoc empty (\ _ -> set))
+                                                                  (\ g1 ->
+                                                                     el
+                                                                     (eval {snoc empty (\ _ -> set)} {\ _ -> set}
+                                                                      (var (zero {empty} {\ _ -> set})) g1))}
+                                                                 {\ _ -> set}
+                                                                 (var
+                                                                  (suc {snoc empty (\ _ -> set)}
+                                                                   {\ z2 ->
+                                                                      el
+                                                                      (eval {snoc empty (\ _ -> set)} {\ _ -> set}
+                                                                       (var (zero {empty} {\ _ -> set})) z2)}
+                                                                   {\ _ -> set} (zero {empty} {\ _ -> set})))
+                                                                 (pair z1 v)))
+                                                               (\ v1 -> set)))}
+                                                        {\ _ -> set}
+                                                        (var
+                                                         (suc {snoc empty (\ _ -> set)}
+                                                          {\ z1 ->
+                                                             pi
+                                                             (el
+                                                              (eval {snoc empty (\ _ -> set)} {\ _ -> set}
+                                                               (var (zero {empty} {\ _ -> set})) z1))
+                                                             (\ v ->
+                                                                pi
+                                                                (el
+                                                                 (eval
+                                                                  {snoc (snoc empty (\ _ -> set))
+                                                                   (\ g1 ->
+                                                                      el
+                                                                      (eval {snoc empty (\ _ -> set)} {\ _ -> set}
+                                                                       (var (zero {empty} {\ _ -> set})) g1))}
+                                                                  {\ _ -> set}
+                                                                  (var
+                                                                   (suc {snoc empty (\ _ -> set)}
+                                                                    {\ z2 ->
+                                                                       el
+                                                                       (eval {snoc empty (\ _ -> set)} {\ _ -> set}
+                                                                        (var (zero {empty} {\ _ -> set})) z2)}
+                                                                    {\ _ -> set} (zero {empty} {\ _ -> set})))
+                                                                  (pair z1 v)))
+                                                                (\ v1 -> set))}
+                                                          {\ g1 -> set} (zero {empty} {\ _ -> set})))
+                                                        z)}
+                                                    {\ g1 ->
+                                                       pi
+                                                       (el
+                                                        (eval {snoc empty (\ _ -> set)} {\ _ -> set}
+                                                         (var (zero {empty} {\ _ -> set})) (fst g1)))
+                                                       (\ v ->
+                                                          pi
+                                                          (el
+                                                           (eval
+                                                            {snoc (snoc empty (\ _ -> set))
+                                                             (\ g1 ->
+                                                                el
+                                                                (eval {snoc empty (\ _ -> set)} {\ _ -> set}
+                                                                 (var (zero {empty} {\ _ -> set})) g1))}
+                                                            {\ _ -> set}
+                                                            (var
+                                                             (suc {snoc empty (\ _ -> set)}
+                                                              {\ z ->
+                                                                 el
+                                                                 (eval {snoc empty (\ _ -> set)} {\ _ -> set}
+                                                                  (var (zero {empty} {\ _ -> set})) z)}
+                                                              {\ _ -> set} (zero {empty} {\ _ -> set})))
+                                                            (pair (fst g1) v)))
+                                                          (\ v1 -> set))}
+                                                    (zero {snoc empty (\ _ -> set)}
+                                                     {\ z ->
+                                                        pi
+                                                        (el
+                                                         (eval {snoc empty (\ _ -> set)} {\ _ -> set}
+                                                          (var (zero {empty} {\ _ -> set})) z))
+                                                        (\ v ->
+                                                           pi
+                                                           (el
+                                                            (eval
+                                                             {snoc (snoc empty (\ _ -> set))
+                                                              (\ g1 ->
+                                                                 el
+                                                                 (eval {snoc empty (\ _ -> set)} {\ _ -> set}
+                                                                  (var (zero {empty} {\ _ -> set})) g1))}
+                                                             {\ _ -> set}
+                                                             (var
+                                                              (suc {snoc empty (\ _ -> set)}
+                                                               {\ z1 ->
+                                                                  el
+                                                                  (eval {snoc empty (\ _ -> set)} {\ _ -> set}
+                                                                   (var (zero {empty} {\ _ -> set})) z1)}
+                                                               {\ _ -> set} (zero {empty} {\ _ -> set})))
+                                                             (pair z v)))
+                                                           (\ v1 -> set))})))
+                                                  (var
+                                                   (zero
+                                                    {snoc (snoc empty (\ v -> set))
+                                                     (\ z ->
+                                                        pi
+                                                        (el
+                                                         (eval {snoc empty (\ _ -> set)} {\ _ -> set}
+                                                          (var (zero {empty} {\ _ -> set})) z))
+                                                        (\ v ->
+                                                           pi
+                                                           (el
+                                                            (eval
+                                                             {snoc (snoc empty (\ _ -> set))
+                                                              (\ g1 ->
+                                                                 el
+                                                                 (eval {snoc empty (\ _ -> set)} {\ _ -> set}
+                                                                  (var (zero {empty} {\ _ -> set})) g1))}
+                                                             {\ _ -> set}
+                                                             (var
+                                                              (suc {snoc empty (\ _ -> set)}
+                                                               {\ z1 ->
+                                                                  el
+                                                                  (eval {snoc empty (\ _ -> set)} {\ _ -> set}
+                                                                   (var (zero {empty} {\ _ -> set})) z1)}
+                                                               {\ _ -> set} (zero {empty} {\ _ -> set})))
+                                                             (pair z v)))
+                                                           (\ v1 -> set)))}
+                                                    {\ z ->
+                                                       el
+                                                       (eval
+                                                        {snoc (snoc empty (\ _ -> set))
+                                                         (\ z1 ->
+                                                            pi
+                                                            (el
+                                                             (eval {snoc empty (\ _ -> set)} {\ _ -> set}
+                                                              (var (zero {empty} {\ _ -> set})) z1))
+                                                            (\ v ->
+                                                               pi
+                                                               (el
+                                                                (eval
+                                                                 {snoc (snoc empty (\ _ -> set))
+                                                                  (\ g1 ->
+                                                                     el
+                                                                     (eval {snoc empty (\ _ -> set)} {\ _ -> set}
+                                                                      (var (zero {empty} {\ _ -> set})) g1))}
+                                                                 {\ _ -> set}
+                                                                 (var
+                                                                  (suc {snoc empty (\ _ -> set)}
+                                                                   {\ z2 ->
+                                                                      el
+                                                                      (eval {snoc empty (\ _ -> set)} {\ _ -> set}
+                                                                       (var (zero {empty} {\ _ -> set})) z2)}
+                                                                   {\ _ -> set} (zero {empty} {\ _ -> set})))
+                                                                 (pair z1 v)))
+                                                               (\ v1 -> set)))}
+                                                        {\ _ -> set}
+                                                        (var
+                                                         (suc {snoc empty (\ _ -> set)}
+                                                          {\ z1 ->
+                                                             pi
+                                                             (el
+                                                              (eval {snoc empty (\ _ -> set)} {\ _ -> set}
+                                                               (var (zero {empty} {\ _ -> set})) z1))
+                                                             (\ v ->
+                                                                pi
+                                                                (el
+                                                                 (eval
+                                                                  {snoc (snoc empty (\ _ -> set))
+                                                                   (\ g1 ->
+                                                                      el
+                                                                      (eval {snoc empty (\ _ -> set)} {\ _ -> set}
+                                                                       (var (zero {empty} {\ _ -> set})) g1))}
+                                                                  {\ _ -> set}
+                                                                  (var
+                                                                   (suc {snoc empty (\ _ -> set)}
+                                                                    {\ z2 ->
+                                                                       el
+                                                                       (eval {snoc empty (\ _ -> set)} {\ _ -> set}
+                                                                        (var (zero {empty} {\ _ -> set})) z2)}
+                                                                    {\ _ -> set} (zero {empty} {\ _ -> set})))
+                                                                  (pair z1 v)))
+                                                                (\ v1 -> set))}
+                                                          {\ g1 -> set} (zero {empty} {\ _ -> set})))
+                                                        z)})))
+                                                 (var
+                                                  (zero
+                                                   {snoc (snoc empty (\ v -> set))
+                                                    (\ z ->
+                                                       pi
+                                                       (el
+                                                        (eval {snoc empty (\ _ -> set)} {\ _ -> set}
+                                                         (var (zero {empty} {\ _ -> set})) z))
+                                                       (\ v ->
+                                                          pi
+                                                          (el
+                                                           (eval
+                                                            {snoc (snoc empty (\ _ -> set))
+                                                             (\ g1 ->
+                                                                el
+                                                                (eval {snoc empty (\ _ -> set)} {\ _ -> set}
+                                                                 (var (zero {empty} {\ _ -> set})) g1))}
+                                                            {\ _ -> set}
+                                                            (var
+                                                             (suc {snoc empty (\ _ -> set)}
+                                                              {\ z1 ->
+                                                                 el
+                                                                 (eval {snoc empty (\ _ -> set)} {\ _ -> set}
+                                                                  (var (zero {empty} {\ _ -> set})) z1)}
+                                                              {\ _ -> set} (zero {empty} {\ _ -> set})))
+                                                            (pair z v)))
+                                                          (\ v1 -> set)))}
+                                                   {\ z ->
+                                                      el
+                                                      (eval
+                                                       {snoc (snoc empty (\ _ -> set))
+                                                        (\ z1 ->
+                                                           pi
+                                                           (el
+                                                            (eval {snoc empty (\ _ -> set)} {\ _ -> set}
+                                                             (var (zero {empty} {\ _ -> set})) z1))
+                                                           (\ v ->
+                                                              pi
+                                                              (el
+                                                               (eval
+                                                                {snoc (snoc empty (\ _ -> set))
+                                                                 (\ g1 ->
+                                                                    el
+                                                                    (eval {snoc empty (\ _ -> set)} {\ _ -> set}
+                                                                     (var (zero {empty} {\ _ -> set})) g1))}
+                                                                {\ _ -> set}
+                                                                (var
+                                                                 (suc {snoc empty (\ _ -> set)}
+                                                                  {\ z2 ->
+                                                                     el
+                                                                     (eval {snoc empty (\ _ -> set)} {\ _ -> set}
+                                                                      (var (zero {empty} {\ _ -> set})) z2)}
+                                                                  {\ _ -> set} (zero {empty} {\ _ -> set})))
+                                                                (pair z1 v)))
+                                                              (\ v1 -> set)))}
+                                                       {\ _ -> set}
+                                                       (var
+                                                        (suc {snoc empty (\ _ -> set)}
+                                                         {\ z1 ->
+                                                            pi
+                                                            (el
+                                                             (eval {snoc empty (\ _ -> set)} {\ _ -> set}
+                                                              (var (zero {empty} {\ _ -> set})) z1))
+                                                            (\ v ->
+                                                               pi
+                                                               (el
+                                                                (eval
+                                                                 {snoc (snoc empty (\ _ -> set))
+                                                                  (\ g1 ->
+                                                                     el
+                                                                     (eval {snoc empty (\ _ -> set)} {\ _ -> set}
+                                                                      (var (zero {empty} {\ _ -> set})) g1))}
+                                                                 {\ _ -> set}
+                                                                 (var
+                                                                  (suc {snoc empty (\ _ -> set)}
+                                                                   {\ z2 ->
+                                                                      el
+                                                                      (eval {snoc empty (\ _ -> set)} {\ _ -> set}
+                                                                       (var (zero {empty} {\ _ -> set})) z2)}
+                                                                   {\ _ -> set} (zero {empty} {\ _ -> set})))
+                                                                 (pair z1 v)))
+                                                               (\ v1 -> set))}
+                                                         {\ g1 -> set} (zero {empty} {\ _ -> set})))
+                                                       z)})))
+                                                g)} (el' {snoc (snoc empty (\ z -> set))
+                                                            (\ z ->
+                                                               pi
+                                                               (el
+                                                                (eval {snoc empty (\ _ -> set)} {\ _ -> set}
+                                                                 (var (zero {empty} {\ _ -> set})) z))
+                                                               (\ v ->
+                                                                  pi
+                                                                  (el
+                                                                   (eval
+                                                                    {snoc (snoc empty (\ _ -> set))
+                                                                     (\ g1 ->
+                                                                        el
+                                                                        (eval {snoc empty (\ _ -> set)} {\ _ -> set}
+                                                                         (var (zero {empty} {\ _ -> set})) g1))}
+                                                                    {\ _ -> set}
+                                                                    (var
+                                                                     (suc {snoc empty (\ _ -> set)}
+                                                                      {\ z1 ->
+                                                                         el
+                                                                         (eval {snoc empty (\ _ -> set)} {\ _ -> set}
+                                                                          (var (zero {empty} {\ _ -> set})) z1)}
+                                                                      {\ _ -> set} (zero {empty} {\ _ -> set})))
+                                                                    (pair z v)))
+                                                                  (\ v1 -> set)))}
+      (var (suc {snoc empty (\ z -> set)} {\ z ->
+                                                                                                                          pi
+                                                                                                                          (el
+                                                                                                                           (eval {snoc empty (\ _ -> set)} {\ _ -> set}
+                                                                                                                            (var (zero {empty} {\ _ -> set})) z))
+                                                                                                                          (\ v ->
+                                                                                                                             pi
+                                                                                                                             (el
+                                                                                                                              (eval
+                                                                                                                               {snoc (snoc empty (\ _ -> set))
+                                                                                                                                (\ g1 ->
+                                                                                                                                   el
+                                                                                                                                   (eval {snoc empty (\ _ -> set)} {\ _ -> set}
+                                                                                                                                    (var (zero {empty} {\ _ -> set})) g1))}
+                                                                                                                               {\ _ -> set}
+                                                                                                                               (var
+                                                                                                                                (suc {snoc empty (\ _ -> set)}
+                                                                                                                                 {\ z1 ->
+                                                                                                                                    el
+                                                                                                                                    (eval {snoc empty (\ _ -> set)} {\ _ -> set}
+                                                                                                                                     (var (zero {empty} {\ _ -> set})) z1)}
+                                                                                                                                 {\ _ -> set} (zero {empty} {\ _ -> set})))
+                                                                                                                               (pair z v)))
+                                                                                                                             (\ v1 -> set))} {\ g -> set} (zero {empty} {\ _ -> set}))))
+       (el' {snoc
+               (snoc (snoc empty (\ z -> set))
+                (\ z ->
+                   pi
+                   (el
+                    (eval {snoc empty (\ _ -> set)} {\ _ -> set}
+                     (var (zero {empty} {\ _ -> set})) z))
+                   (\ v ->
+                      pi
+                      (el
+                       (eval
+                        {snoc (snoc empty (\ _ -> set))
+                         (\ g1 ->
+                            el
+                            (eval {snoc empty (\ _ -> set)} {\ _ -> set}
+                             (var (zero {empty} {\ _ -> set})) g1))}
+                        {\ _ -> set}
+                        (var
+                         (suc {snoc empty (\ _ -> set)}
+                          {\ z1 ->
+                             el
+                             (eval {snoc empty (\ _ -> set)} {\ _ -> set}
+                              (var (zero {empty} {\ _ -> set})) z1)}
+                          {\ _ -> set} (zero {empty} {\ _ -> set})))
+                        (pair z v)))
+                      (\ v1 -> set))))
+               (\ z ->
+                  el
+                  (eval
+                   {snoc (snoc empty (\ z1 -> set))
+                    (\ z1 ->
+                       pi
+                       (el
+                        (eval {snoc empty (\ _ -> set)} {\ _ -> set}
+                         (var (zero {empty} {\ _ -> set})) z1))
+                       (\ v ->
+                          pi
+                          (el
+                           (eval
+                            {snoc (snoc empty (\ _ -> set))
+                             (\ g1 ->
+                                el
+                                (eval {snoc empty (\ _ -> set)} {\ _ -> set}
+                                 (var (zero {empty} {\ _ -> set})) g1))}
+                            {\ _ -> set}
+                            (var
+                             (suc {snoc empty (\ _ -> set)}
+                              {\ z2 ->
+                                 el
+                                 (eval {snoc empty (\ _ -> set)} {\ _ -> set}
+                                  (var (zero {empty} {\ _ -> set})) z2)}
+                              {\ _ -> set} (zero {empty} {\ _ -> set})))
+                            (pair z1 v)))
+                          (\ v1 -> set)))}
+                   {\ _ -> set}
+                   (var
+                    (suc {snoc empty (\ _ -> set)}
+                     {\ z1 ->
+                        pi
+                        (el
+                         (eval {snoc empty (\ _ -> set)} {\ _ -> set}
+                          (var (zero {empty} {\ _ -> set})) z1))
+                        (\ v ->
+                           pi
+                           (el
+                            (eval
+                             {snoc (snoc empty (\ _ -> set))
+                              (\ g1 ->
+                                 el
+                                 (eval {snoc empty (\ _ -> set)} {\ _ -> set}
+                                  (var (zero {empty} {\ _ -> set})) g1))}
+                             {\ _ -> set}
+                             (var
+                              (suc {snoc empty (\ _ -> set)}
+                               {\ z2 ->
+                                  el
+                                  (eval {snoc empty (\ _ -> set)} {\ _ -> set}
+                                   (var (zero {empty} {\ _ -> set})) z2)}
+                               {\ _ -> set} (zero {empty} {\ _ -> set})))
+                             (pair z1 v)))
+                           (\ v1 -> set))}
+                     {\ g1 -> set} (zero {empty} {\ _ -> set})))
+                   z))} (app {snoc
+                                (snoc (snoc empty (\ z -> set))
+                                 (\ z ->
+                                    pi
+                                    (el
+                                     (eval {snoc empty (\ _ -> set)} {\ _ -> set}
+                                      (var (zero {empty} {\ _ -> set})) z))
+                                    (\ v ->
+                                       pi
+                                       (el
+                                        (eval
+                                         {snoc (snoc empty (\ _ -> set))
+                                          (\ g1 ->
+                                             el
+                                             (eval {snoc empty (\ _ -> set)} {\ _ -> set}
+                                              (var (zero {empty} {\ _ -> set})) g1))}
+                                         {\ _ -> set}
+                                         (var
+                                          (suc {snoc empty (\ _ -> set)}
+                                           {\ z1 ->
+                                              el
+                                              (eval {snoc empty (\ _ -> set)} {\ _ -> set}
+                                               (var (zero {empty} {\ _ -> set})) z1)}
+                                           {\ _ -> set} (zero {empty} {\ _ -> set})))
+                                         (pair z v)))
+                                       (\ v1 -> set))))
+                                (\ z ->
+                                   el
+                                   (eval
+                                    {snoc (snoc empty (\ z1 -> set))
+                                     (\ z1 ->
+                                        pi
+                                        (el
+                                         (eval {snoc empty (\ _ -> set)} {\ _ -> set}
+                                          (var (zero {empty} {\ _ -> set})) z1))
+                                        (\ v ->
+                                           pi
+                                           (el
+                                            (eval
+                                             {snoc (snoc empty (\ _ -> set))
+                                              (\ g1 ->
+                                                 el
+                                                 (eval {snoc empty (\ _ -> set)} {\ _ -> set}
+                                                  (var (zero {empty} {\ _ -> set})) g1))}
+                                             {\ _ -> set}
+                                             (var
+                                              (suc {snoc empty (\ _ -> set)}
+                                               {\ z2 ->
+                                                  el
+                                                  (eval {snoc empty (\ _ -> set)} {\ _ -> set}
+                                                   (var (zero {empty} {\ _ -> set})) z2)}
+                                               {\ _ -> set} (zero {empty} {\ _ -> set})))
+                                             (pair z1 v)))
+                                           (\ v1 -> set)))}
+                                    {\ _ -> set}
+                                    (var
+                                     (suc {snoc empty (\ _ -> set)}
+                                      {\ z1 ->
+                                         pi
+                                         (el
+                                          (eval {snoc empty (\ _ -> set)} {\ _ -> set}
+                                           (var (zero {empty} {\ _ -> set})) z1))
+                                         (\ v ->
+                                            pi
+                                            (el
+                                             (eval
+                                              {snoc (snoc empty (\ _ -> set))
+                                               (\ g1 ->
+                                                  el
+                                                  (eval {snoc empty (\ _ -> set)} {\ _ -> set}
+                                                   (var (zero {empty} {\ _ -> set})) g1))}
+                                              {\ _ -> set}
+                                              (var
+                                               (suc {snoc empty (\ _ -> set)}
+                                                {\ z2 ->
+                                                   el
+                                                   (eval {snoc empty (\ _ -> set)} {\ _ -> set}
+                                                    (var (zero {empty} {\ _ -> set})) z2)}
+                                                {\ _ -> set} (zero {empty} {\ _ -> set})))
+                                              (pair z1 v)))
+                                            (\ v1 -> set))}
+                                      {\ g1 -> set} (zero {empty} {\ _ -> set})))
+                                    z))} {\ g ->
+                                              el
+                                              (eval
+                                               {snoc (snoc empty (\ z -> set))
+                                                (\ z ->
+                                                   pi
+                                                   (el
+                                                    (eval {snoc empty (\ _ -> set)} {\ _ -> set}
+                                                     (var (zero {empty} {\ _ -> set})) z))
+                                                   (\ v ->
+                                                      pi
+                                                      (el
+                                                       (eval
+                                                        {snoc (snoc empty (\ _ -> set))
+                                                         (\ g1 ->
+                                                            el
+                                                            (eval {snoc empty (\ _ -> set)} {\ _ -> set}
+                                                             (var (zero {empty} {\ _ -> set})) g1))}
+                                                        {\ _ -> set}
+                                                        (var
+                                                         (suc {snoc empty (\ _ -> set)}
+                                                          {\ z1 ->
+                                                             el
+                                                             (eval {snoc empty (\ _ -> set)} {\ _ -> set}
+                                                              (var (zero {empty} {\ _ -> set})) z1)}
+                                                          {\ _ -> set} (zero {empty} {\ _ -> set})))
+                                                        (pair z v)))
+                                                      (\ v1 -> set)))}
+                                               {\ _ -> set}
+                                               (var
+                                                (suc {snoc empty (\ _ -> set)}
+                                                 {\ z ->
+                                                    pi
+                                                    (el
+                                                     (eval {snoc empty (\ _ -> set)} {\ _ -> set}
+                                                      (var (zero {empty} {\ _ -> set})) z))
+                                                    (\ v ->
+                                                       pi
+                                                       (el
+                                                        (eval
+                                                         {snoc (snoc empty (\ _ -> set))
+                                                          (\ g1 ->
+                                                             el
+                                                             (eval {snoc empty (\ _ -> set)} {\ _ -> set}
+                                                              (var (zero {empty} {\ _ -> set})) g1))}
+                                                         {\ _ -> set}
+                                                         (var
+                                                          (suc {snoc empty (\ _ -> set)}
+                                                           {\ z1 ->
+                                                              el
+                                                              (eval {snoc empty (\ _ -> set)} {\ _ -> set}
+                                                               (var (zero {empty} {\ _ -> set})) z1)}
+                                                           {\ _ -> set} (zero {empty} {\ _ -> set})))
+                                                         (pair z v)))
+                                                       (\ v1 -> set))}
+                                                 {\ g1 -> set} (zero {empty} {\ _ -> set})))
+                                               (fst g))} (app {snoc
+                                                                 (snoc (snoc empty (\ z -> set))
+                                                                  (\ z ->
+                                                                     pi
+                                                                     (el
+                                                                      (eval {snoc empty (\ _ -> set)} {\ _ -> set}
+                                                                       (var (zero {empty} {\ _ -> set})) z))
+                                                                     (\ v ->
+                                                                        pi
+                                                                        (el
+                                                                         (eval
+                                                                          {snoc (snoc empty (\ _ -> set))
+                                                                           (\ g1 ->
+                                                                              el
+                                                                              (eval {snoc empty (\ _ -> set)} {\ _ -> set}
+                                                                               (var (zero {empty} {\ _ -> set})) g1))}
+                                                                          {\ _ -> set}
+                                                                          (var
+                                                                           (suc {snoc empty (\ _ -> set)}
+                                                                            {\ z1 ->
+                                                                               el
+                                                                               (eval {snoc empty (\ _ -> set)} {\ _ -> set}
+                                                                                (var (zero {empty} {\ _ -> set})) z1)}
+                                                                            {\ _ -> set} (zero {empty} {\ _ -> set})))
+                                                                          (pair z v)))
+                                                                        (\ v1 -> set))))
+                                                                 (\ z ->
+                                                                    el
+                                                                    (eval
+                                                                     {snoc (snoc empty (\ z1 -> set))
+                                                                      (\ z1 ->
+                                                                         pi
+                                                                         (el
+                                                                          (eval {snoc empty (\ _ -> set)} {\ _ -> set}
+                                                                           (var (zero {empty} {\ _ -> set})) z1))
+                                                                         (\ v ->
+                                                                            pi
+                                                                            (el
+                                                                             (eval
+                                                                              {snoc (snoc empty (\ _ -> set))
+                                                                               (\ g1 ->
+                                                                                  el
+                                                                                  (eval {snoc empty (\ _ -> set)} {\ _ -> set}
+                                                                                   (var (zero {empty} {\ _ -> set})) g1))}
+                                                                              {\ _ -> set}
+                                                                              (var
+                                                                               (suc {snoc empty (\ _ -> set)}
+                                                                                {\ z2 ->
+                                                                                   el
+                                                                                   (eval {snoc empty (\ _ -> set)} {\ _ -> set}
+                                                                                    (var (zero {empty} {\ _ -> set})) z2)}
+                                                                                {\ _ -> set} (zero {empty} {\ _ -> set})))
+                                                                              (pair z1 v)))
+                                                                            (\ v1 -> set)))}
+                                                                     {\ _ -> set}
+                                                                     (var
+                                                                      (suc {snoc empty (\ _ -> set)}
+                                                                       {\ z1 ->
+                                                                          pi
+                                                                          (el
+                                                                           (eval {snoc empty (\ _ -> set)} {\ _ -> set}
+                                                                            (var (zero {empty} {\ _ -> set})) z1))
+                                                                          (\ v ->
+                                                                             pi
+                                                                             (el
+                                                                              (eval
+                                                                               {snoc (snoc empty (\ _ -> set))
+                                                                                (\ g1 ->
+                                                                                   el
+                                                                                   (eval {snoc empty (\ _ -> set)} {\ _ -> set}
+                                                                                    (var (zero {empty} {\ _ -> set})) g1))}
+                                                                               {\ _ -> set}
+                                                                               (var
+                                                                                (suc {snoc empty (\ _ -> set)}
+                                                                                 {\ z2 ->
+                                                                                    el
+                                                                                    (eval {snoc empty (\ _ -> set)} {\ _ -> set}
+                                                                                     (var (zero {empty} {\ _ -> set})) z2)}
+                                                                                 {\ _ -> set} (zero {empty} {\ _ -> set})))
+                                                                               (pair z1 v)))
+                                                                             (\ v1 -> set))}
+                                                                       {\ g1 -> set} (zero {empty} {\ _ -> set})))
+                                                                     z))} {\ g ->
+                                                                               el
+                                                                               (eval
+                                                                                {snoc (snoc empty (\ z -> set))
+                                                                                 (\ z ->
+                                                                                    pi
+                                                                                    (el
+                                                                                     (eval {snoc empty (\ _ -> set)} {\ _ -> set}
+                                                                                      (var (zero {empty} {\ _ -> set})) z))
+                                                                                    (\ v ->
+                                                                                       pi
+                                                                                       (el
+                                                                                        (eval
+                                                                                         {snoc (snoc empty (\ _ -> set))
+                                                                                          (\ g1 ->
+                                                                                             el
+                                                                                             (eval {snoc empty (\ _ -> set)} {\ _ -> set}
+                                                                                              (var (zero {empty} {\ _ -> set})) g1))}
+                                                                                         {\ _ -> set}
+                                                                                         (var
+                                                                                          (suc {snoc empty (\ _ -> set)}
+                                                                                           {\ z1 ->
+                                                                                              el
+                                                                                              (eval {snoc empty (\ _ -> set)} {\ _ -> set}
+                                                                                               (var (zero {empty} {\ _ -> set})) z1)}
+                                                                                           {\ _ -> set} (zero {empty} {\ _ -> set})))
+                                                                                         (pair z v)))
+                                                                                       (\ v1 -> set)))}
+                                                                                {\ _ -> set}
+                                                                                (var
+                                                                                 (suc {snoc empty (\ _ -> set)}
+                                                                                  {\ z ->
+                                                                                     pi
+                                                                                     (el
+                                                                                      (eval {snoc empty (\ _ -> set)} {\ _ -> set}
+                                                                                       (var (zero {empty} {\ _ -> set})) z))
+                                                                                     (\ v ->
+                                                                                        pi
+                                                                                        (el
+                                                                                         (eval
+                                                                                          {snoc (snoc empty (\ _ -> set))
+                                                                                           (\ g1 ->
+                                                                                              el
+                                                                                              (eval {snoc empty (\ _ -> set)} {\ _ -> set}
+                                                                                               (var (zero {empty} {\ _ -> set})) g1))}
+                                                                                          {\ _ -> set}
+                                                                                          (var
+                                                                                           (suc {snoc empty (\ _ -> set)}
+                                                                                            {\ z1 ->
+                                                                                               el
+                                                                                               (eval {snoc empty (\ _ -> set)} {\ _ -> set}
+                                                                                                (var (zero {empty} {\ _ -> set})) z1)}
+                                                                                            {\ _ -> set} (zero {empty} {\ _ -> set})))
+                                                                                          (pair z v)))
+                                                                                        (\ v1 -> set))}
+                                                                                  {\ g1 -> set} (zero {empty} {\ _ -> set})))
+                                                                                (fst g))} {\ g v ->
+                                                                                               pi
+                                                                                               (el
+                                                                                                (eval
+                                                                                                 {snoc (snoc empty (\ _ -> set))
+                                                                                                  (\ g1 ->
+                                                                                                     el
+                                                                                                     (eval {snoc empty (\ _ -> set)} {\ _ -> set}
+                                                                                                      (var (zero {empty} {\ _ -> set})) g1))}
+                                                                                                 {\ _ -> set}
+                                                                                                 (var
+                                                                                                  (suc {snoc empty (\ _ -> set)}
+                                                                                                   {\ z1 ->
+                                                                                                      el
+                                                                                                      (eval {snoc empty (\ _ -> set)} {\ _ -> set}
+                                                                                                       (var (zero {empty} {\ _ -> set})) z1)}
+                                                                                                   {\ _ -> set} (zero {empty} {\ _ -> set})))
+                                                                                                 (pair (fst (fst g)) v)))
+                                                                                               (\ v1 -> set)} (var (suc {snoc (snoc empty (\ _ -> set))
+                                                                                                                          (\ z ->
+                                                                                                                             pi
+                                                                                                                             (el
+                                                                                                                              (eval {snoc empty (\ _ -> set)} {\ _ -> set}
+                                                                                                                               (var (zero {empty} {\ _ -> set})) z))
+                                                                                                                             (\ v ->
+                                                                                                                                pi
+                                                                                                                                (el
+                                                                                                                                 (eval
+                                                                                                                                  {snoc (snoc empty (\ _ -> set))
+                                                                                                                                   (\ g1 ->
+                                                                                                                                      el
+                                                                                                                                      (eval {snoc empty (\ _ -> set)} {\ _ -> set}
+                                                                                                                                       (var (zero {empty} {\ _ -> set})) g1))}
+                                                                                                                                  {\ _ -> set}
+                                                                                                                                  (var
+                                                                                                                                   (suc {snoc empty (\ _ -> set)}
+                                                                                                                                    {\ z1 ->
+                                                                                                                                       el
+                                                                                                                                       (eval {snoc empty (\ _ -> set)} {\ _ -> set}
+                                                                                                                                        (var (zero {empty} {\ _ -> set})) z1)}
+                                                                                                                                    {\ _ -> set} (zero {empty} {\ _ -> set})))
+                                                                                                                                  (pair z v)))
+                                                                                                                                (\ v1 -> set)))} {\ z ->
+                                                                                                                                                     el
+                                                                                                                                                     (eval
+                                                                                                                                                      {snoc (snoc empty (\ z1 -> set))
+                                                                                                                                                       (\ z1 ->
+                                                                                                                                                          pi
+                                                                                                                                                          (el
+                                                                                                                                                           (eval {snoc empty (\ _ -> set)} {\ _ -> set}
+                                                                                                                                                            (var (zero {empty} {\ _ -> set})) z1))
+                                                                                                                                                          (\ v ->
+                                                                                                                                                             pi
+                                                                                                                                                             (el
+                                                                                                                                                              (eval
+                                                                                                                                                               {snoc (snoc empty (\ _ -> set))
+                                                                                                                                                                (\ g1 ->
+                                                                                                                                                                   el
+                                                                                                                                                                   (eval {snoc empty (\ _ -> set)} {\ _ -> set}
+                                                                                                                                                                    (var (zero {empty} {\ _ -> set})) g1))}
+                                                                                                                                                               {\ _ -> set}
+                                                                                                                                                               (var
+                                                                                                                                                                (suc {snoc empty (\ _ -> set)}
+                                                                                                                                                                 {\ z2 ->
+                                                                                                                                                                    el
+                                                                                                                                                                    (eval {snoc empty (\ _ -> set)} {\ _ -> set}
+                                                                                                                                                                     (var (zero {empty} {\ _ -> set})) z2)}
+                                                                                                                                                                 {\ _ -> set} (zero {empty} {\ _ -> set})))
+                                                                                                                                                               (pair z1 v)))
+                                                                                                                                                             (\ v1 -> set)))}
+                                                                                                                                                      {\ _ -> set}
+                                                                                                                                                      (var
+                                                                                                                                                       (suc {snoc empty (\ _ -> set)}
+                                                                                                                                                        {\ z1 ->
+                                                                                                                                                           pi
+                                                                                                                                                           (el
+                                                                                                                                                            (eval {snoc empty (\ _ -> set)} {\ _ -> set}
+                                                                                                                                                             (var (zero {empty} {\ _ -> set})) z1))
+                                                                                                                                                           (\ v ->
+                                                                                                                                                              pi
+                                                                                                                                                              (el
+                                                                                                                                                               (eval
+                                                                                                                                                                {snoc (snoc empty (\ _ -> set))
+                                                                                                                                                                 (\ g1 ->
+                                                                                                                                                                    el
+                                                                                                                                                                    (eval {snoc empty (\ _ -> set)} {\ _ -> set}
+                                                                                                                                                                     (var (zero {empty} {\ _ -> set})) g1))}
+                                                                                                                                                                {\ _ -> set}
+                                                                                                                                                                (var
+                                                                                                                                                                 (suc {snoc empty (\ _ -> set)}
+                                                                                                                                                                  {\ z2 ->
+                                                                                                                                                                     el
+                                                                                                                                                                     (eval {snoc empty (\ _ -> set)} {\ _ -> set}
+                                                                                                                                                                      (var (zero {empty} {\ _ -> set})) z2)}
+                                                                                                                                                                  {\ _ -> set} (zero {empty} {\ _ -> set})))
+                                                                                                                                                                (pair z1 v)))
+                                                                                                                                                              (\ v1 -> set))}
+                                                                                                                                                        {\ g1 -> set} (zero {empty} {\ _ -> set})))
+                                                                                                                                                      z)} {\ g ->
+                                                                                                                                                               pi
+                                                                                                                                                               (el
+                                                                                                                                                                (eval {snoc empty (\ _ -> set)} {\ _ -> set}
+                                                                                                                                                                 (var (zero {empty} {\ _ -> set})) (fst g)))
+                                                                                                                                                               (\ v ->
+                                                                                                                                                                  pi
+                                                                                                                                                                  (el
+                                                                                                                                                                   (eval
+                                                                                                                                                                    {snoc (snoc empty (\ _ -> set))
+                                                                                                                                                                     (\ g1 ->
+                                                                                                                                                                        el
+                                                                                                                                                                        (eval {snoc empty (\ _ -> set)} {\ _ -> set}
+                                                                                                                                                                         (var (zero {empty} {\ _ -> set})) g1))}
+                                                                                                                                                                    {\ _ -> set}
+                                                                                                                                                                    (var
+                                                                                                                                                                     (suc {snoc empty (\ _ -> set)}
+                                                                                                                                                                      {\ z1 ->
+                                                                                                                                                                         el
+                                                                                                                                                                         (eval {snoc empty (\ _ -> set)} {\ _ -> set}
+                                                                                                                                                                          (var (zero {empty} {\ _ -> set})) z1)}
+                                                                                                                                                                      {\ _ -> set} (zero {empty} {\ _ -> set})))
+                                                                                                                                                                    (pair (fst g) v)))
+                                                                                                                                                                  (\ v1 -> set))} (zero {snoc empty (\ _ -> set)} {\ z ->
+                                                                                                                                                              pi
+                                                                                                                                                              (el
+                                                                                                                                                               (eval {snoc empty (\ _ -> set)} {\ _ -> set}
+                                                                                                                                                                (var (zero {empty} {\ _ -> set})) z))
+                                                                                                                                                              (\ v ->
+                                                                                                                                                                 pi
+                                                                                                                                                                 (el
+                                                                                                                                                                  (eval
+                                                                                                                                                                   {snoc (snoc empty (\ _ -> set))
+                                                                                                                                                                    (\ g1 ->
+                                                                                                                                                                       el
+                                                                                                                                                                       (eval {snoc empty (\ _ -> set)} {\ _ -> set}
+                                                                                                                                                                        (var (zero {empty} {\ _ -> set})) g1))}
+                                                                                                                                                                   {\ _ -> set}
+                                                                                                                                                                   (var
+                                                                                                                                                                    (suc {snoc empty (\ _ -> set)}
+                                                                                                                                                                     {\ z1 ->
+                                                                                                                                                                        el
+                                                                                                                                                                        (eval {snoc empty (\ _ -> set)} {\ _ -> set}
+                                                                                                                                                                         (var (zero {empty} {\ _ -> set})) z1)}
+                                                                                                                                                                     {\ _ -> set} (zero {empty} {\ _ -> set})))
+                                                                                                                                                                   (pair z v)))
+                                                                                                                                                                 (\ v1 -> set))}))) (var (zero {snoc (snoc empty (\ v -> set))
+                                                                                                                                                                     (\ z ->
+                                                                                                                                                                        pi
+                                                                                                                                                                        (el
+                                                                                                                                                                         (eval {snoc empty (\ _ -> set)} {\ _ -> set}
+                                                                                                                                                                          (var (zero {empty} {\ _ -> set})) z))
+                                                                                                                                                                        (\ v ->
+                                                                                                                                                                           pi
+                                                                                                                                                                           (el
+                                                                                                                                                                            (eval
+                                                                                                                                                                             {snoc (snoc empty (\ _ -> set))
+                                                                                                                                                                              (\ g1 ->
+                                                                                                                                                                                 el
+                                                                                                                                                                                 (eval {snoc empty (\ _ -> set)} {\ _ -> set}
+                                                                                                                                                                                  (var (zero {empty} {\ _ -> set})) g1))}
+                                                                                                                                                                             {\ _ -> set}
+                                                                                                                                                                             (var
+                                                                                                                                                                              (suc {snoc empty (\ _ -> set)}
+                                                                                                                                                                               {\ z1 ->
+                                                                                                                                                                                  el
+                                                                                                                                                                                  (eval {snoc empty (\ _ -> set)} {\ _ -> set}
+                                                                                                                                                                                   (var (zero {empty} {\ _ -> set})) z1)}
+                                                                                                                                                                               {\ _ -> set} (zero {empty} {\ _ -> set})))
+                                                                                                                                                                             (pair z v)))
+                                                                                                                                                                           (\ v1 -> set)))} {\ z ->
+                                                                                                                                                                     el
+                                                                                                                                                                     (eval
+                                                                                                                                                                      {snoc (snoc empty (\ z1 -> set))
+                                                                                                                                                                       (\ z1 ->
+                                                                                                                                                                          pi
+                                                                                                                                                                          (el
+                                                                                                                                                                           (eval {snoc empty (\ _ -> set)} {\ _ -> set}
+                                                                                                                                                                            (var (zero {empty} {\ _ -> set})) z1))
+                                                                                                                                                                          (\ v ->
+                                                                                                                                                                             pi
+                                                                                                                                                                             (el
+                                                                                                                                                                              (eval
+                                                                                                                                                                               {snoc (snoc empty (\ _ -> set))
+                                                                                                                                                                                (\ g1 ->
+                                                                                                                                                                                   el
+                                                                                                                                                                                   (eval {snoc empty (\ _ -> set)} {\ _ -> set}
+                                                                                                                                                                                    (var (zero {empty} {\ _ -> set})) g1))}
+                                                                                                                                                                               {\ _ -> set}
+                                                                                                                                                                               (var
+                                                                                                                                                                                (suc {snoc empty (\ _ -> set)}
+                                                                                                                                                                                 {\ z2 ->
+                                                                                                                                                                                    el
+                                                                                                                                                                                    (eval {snoc empty (\ _ -> set)} {\ _ -> set}
+                                                                                                                                                                                     (var (zero {empty} {\ _ -> set})) z2)}
+                                                                                                                                                                                 {\ _ -> set} (zero {empty} {\ _ -> set})))
+                                                                                                                                                                               (pair z1 v)))
+                                                                                                                                                                             (\ v1 -> set)))}
+                                                                                                                                                                      {\ _ -> set}
+                                                                                                                                                                      (var
+                                                                                                                                                                       (suc {snoc empty (\ _ -> set)}
+                                                                                                                                                                        {\ z1 ->
+                                                                                                                                                                           pi
+                                                                                                                                                                           (el
+                                                                                                                                                                            (eval {snoc empty (\ _ -> set)} {\ _ -> set}
+                                                                                                                                                                             (var (zero {empty} {\ _ -> set})) z1))
+                                                                                                                                                                           (\ v ->
+                                                                                                                                                                              pi
+                                                                                                                                                                              (el
+                                                                                                                                                                               (eval
+                                                                                                                                                                                {snoc (snoc empty (\ _ -> set))
+                                                                                                                                                                                 (\ g1 ->
+                                                                                                                                                                                    el
+                                                                                                                                                                                    (eval {snoc empty (\ _ -> set)} {\ _ -> set}
+                                                                                                                                                                                     (var (zero {empty} {\ _ -> set})) g1))}
+                                                                                                                                                                                {\ _ -> set}
+                                                                                                                                                                                (var
+                                                                                                                                                                                 (suc {snoc empty (\ _ -> set)}
+                                                                                                                                                                                  {\ z2 ->
+                                                                                                                                                                                     el
+                                                                                                                                                                                     (eval {snoc empty (\ _ -> set)} {\ _ -> set}
+                                                                                                                                                                                      (var (zero {empty} {\ _ -> set})) z2)}
+                                                                                                                                                                                  {\ _ -> set} (zero {empty} {\ _ -> set})))
+                                                                                                                                                                                (pair z1 v)))
+                                                                                                                                                                              (\ v1 -> set))}
+                                                                                                                                                                        {\ g1 -> set} (zero {empty} {\ _ -> set})))
+                                                                                                                                                                      z)}))) (var (zero {snoc (snoc empty (\ v -> set))
+                                                                                                                                                                                   (\ z ->
+                                                                                                                                                                                      pi
+                                                                                                                                                                                      (el
+                                                                                                                                                                                       (eval {snoc empty (\ _ -> set)} {\ _ -> set}
+                                                                                                                                                                                        (var (zero {empty} {\ _ -> set})) z))
+                                                                                                                                                                                      (\ v ->
+                                                                                                                                                                                         pi
+                                                                                                                                                                                         (el
+                                                                                                                                                                                          (eval
+                                                                                                                                                                                           {snoc (snoc empty (\ _ -> set))
+                                                                                                                                                                                            (\ g1 ->
+                                                                                                                                                                                               el
+                                                                                                                                                                                               (eval {snoc empty (\ _ -> set)} {\ _ -> set}
+                                                                                                                                                                                                (var (zero {empty} {\ _ -> set})) g1))}
+                                                                                                                                                                                           {\ _ -> set}
+                                                                                                                                                                                           (var
+                                                                                                                                                                                            (suc {snoc empty (\ _ -> set)}
+                                                                                                                                                                                             {\ z1 ->
+                                                                                                                                                                                                el
+                                                                                                                                                                                                (eval {snoc empty (\ _ -> set)} {\ _ -> set}
+                                                                                                                                                                                                 (var (zero {empty} {\ _ -> set})) z1)}
+                                                                                                                                                                                             {\ _ -> set} (zero {empty} {\ _ -> set})))
+                                                                                                                                                                                           (pair z v)))
+                                                                                                                                                                                         (\ v1 -> set)))} {\ z ->
+                                                                                                                                                                                   el
+                                                                                                                                                                                   (eval
+                                                                                                                                                                                    {snoc (snoc empty (\ z1 -> set))
+                                                                                                                                                                                     (\ z1 ->
+                                                                                                                                                                                        pi
+                                                                                                                                                                                        (el
+                                                                                                                                                                                         (eval {snoc empty (\ _ -> set)} {\ _ -> set}
+                                                                                                                                                                                          (var (zero {empty} {\ _ -> set})) z1))
+                                                                                                                                                                                        (\ v ->
+                                                                                                                                                                                           pi
+                                                                                                                                                                                           (el
+                                                                                                                                                                                            (eval
+                                                                                                                                                                                             {snoc (snoc empty (\ _ -> set))
+                                                                                                                                                                                              (\ g1 ->
+                                                                                                                                                                                                 el
+                                                                                                                                                                                                 (eval {snoc empty (\ _ -> set)} {\ _ -> set}
+                                                                                                                                                                                                  (var (zero {empty} {\ _ -> set})) g1))}
+                                                                                                                                                                                             {\ _ -> set}
+                                                                                                                                                                                             (var
+                                                                                                                                                                                              (suc {snoc empty (\ _ -> set)}
+                                                                                                                                                                                               {\ z2 ->
+                                                                                                                                                                                                  el
+                                                                                                                                                                                                  (eval {snoc empty (\ _ -> set)} {\ _ -> set}
+                                                                                                                                                                                                   (var (zero {empty} {\ _ -> set})) z2)}
+                                                                                                                                                                                               {\ _ -> set} (zero {empty} {\ _ -> set})))
+                                                                                                                                                                                             (pair z1 v)))
+                                                                                                                                                                                           (\ v1 -> set)))}
+                                                                                                                                                                                    {\ _ -> set}
+                                                                                                                                                                                    (var
+                                                                                                                                                                                     (suc {snoc empty (\ _ -> set)}
+                                                                                                                                                                                      {\ z1 ->
+                                                                                                                                                                                         pi
+                                                                                                                                                                                         (el
+                                                                                                                                                                                          (eval {snoc empty (\ _ -> set)} {\ _ -> set}
+                                                                                                                                                                                           (var (zero {empty} {\ _ -> set})) z1))
+                                                                                                                                                                                         (\ v ->
+                                                                                                                                                                                            pi
+                                                                                                                                                                                            (el
+                                                                                                                                                                                             (eval
+                                                                                                                                                                                              {snoc (snoc empty (\ _ -> set))
+                                                                                                                                                                                               (\ g1 ->
+                                                                                                                                                                                                  el
+                                                                                                                                                                                                  (eval {snoc empty (\ _ -> set)} {\ _ -> set}
+                                                                                                                                                                                                   (var (zero {empty} {\ _ -> set})) g1))}
+                                                                                                                                                                                              {\ _ -> set}
+                                                                                                                                                                                              (var
+                                                                                                                                                                                               (suc {snoc empty (\ _ -> set)}
+                                                                                                                                                                                                {\ z2 ->
+                                                                                                                                                                                                   el
+                                                                                                                                                                                                   (eval {snoc empty (\ _ -> set)} {\ _ -> set}
+                                                                                                                                                                                                    (var (zero {empty} {\ _ -> set})) z2)}
+                                                                                                                                                                                                {\ _ -> set} (zero {empty} {\ _ -> set})))
+                                                                                                                                                                                              (pair z1 v)))
+                                                                                                                                                                                            (\ v1 -> set))}
+                                                                                                                                                                                      {\ g1 -> set} (zero {empty} {\ _ -> set})))
+                                                                                                                                                                                    z)}))))))

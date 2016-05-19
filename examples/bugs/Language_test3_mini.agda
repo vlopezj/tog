@@ -235,7 +235,7 @@ raw-category =
    sigma' {empty} {\_ -> set} {\x -> el (snd x)} (set' {empty})
      -- Morphisms.
     (el' {snoc empty (\_ -> set)}
-      (var (zero {empty} {\u -> _}))) -- should resolve to set
+      (var (zero {empty} {\u -> set}))) -- should resolve to set
    --(pi' (el' (var zero)) set')
   -- (pi' (el' (var (suc zero))) set'))
   -- (sigma' (pi' (el' (var zero)) (pi' (el' (var (suc zero))) set'))
