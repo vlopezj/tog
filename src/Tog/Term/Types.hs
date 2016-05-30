@@ -323,7 +323,6 @@ data TermView t
     | Con (Opened QName t) [Term t]
     | App (Head t) [Elim t]
     deriving (Eq, Generic, Show)
-    bla
 #elif TogStrictTermView
 data TermView t
     = Pi !(Type t) !(Abs (Type t))
