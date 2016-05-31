@@ -1,4 +1,4 @@
-module Bug where
+module BadPostponing_red where
 
 {-@AGDA-}
 open import Prelude
