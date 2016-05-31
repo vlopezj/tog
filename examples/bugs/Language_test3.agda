@@ -1777,7 +1777,9 @@ raw-category =
     (pi' {snoc (snoc empty (\_ -> set)) (\x -> _)} {\x -> _} {\_ -> set}
       (el' {snoc (snoc empty (\_ -> set)) (\g -> el
                                                    (eval {snoc empty (\ _ -> set)} {\ _ -> set}
-                                                    (var (zero {empty} {\ _ -> set})) g))} (var (suc {snoc empty (\_ -> set)} {\z -> ?} {\_ -> set} (zero {empty} {\_ -> set})))) set'))
+                                                    (var (zero {empty} {\ _ -> set})) g))} (var (suc {snoc empty (\_ -> set)} {\z -> el
+                                                                                                                                       (eval {snoc empty (\ _ -> set)} {\ _ -> set}
+                                                                                                                                        (var (zero {empty} {\ _ -> set})) z)} {\_ -> set} (zero {empty} {\_ -> set})))) set'))
      -- Identity.
   (pi' {snoc (snoc empty (\ z -> set))
           (\ z ->
