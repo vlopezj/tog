@@ -2,22 +2,29 @@
 
 make install
 
+function foo () {
+    f="$1"
+
+    res=$(/usr/bin/time -f "%U" tog -q --fastGetAbsName $@ 2>&1; exit $?)
+    error=$?
+
+    echo -e "-${error}-\t$res\t$f"
+}
+export -f foo
+
+
 echo "== Files that should load"
 
 for f in examples/working/*.agda; do
-    echo $f
-    /usr/bin/time -f "%U" tog -q --fastGetAbsName $@ $f
-    if [ "$?" -ne 0 ]; then
-        exit 1
-    fi
+    sem -j+0 foo "$f"
 done
+
+sem --wait
 
 echo "== Files that shouldn't load"
 
 for f in examples/shouldfail/*.agda; do
-    echo $f
-    /usr/bin/time -f "%U" tog -q --fastGetAbsName $@ $f
-    if [ "$?" -ne 1 ]; then
-        exit 1
-    fi
+    sem -j+0 foo "$f"
 done
+
+sem --wait
